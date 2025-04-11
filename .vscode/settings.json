@@ -1,0 +1,37 @@
+{
+	"php.validate.executablePath": "C:\\xampp\\php\\php.exe",
+	"php.validate.enable": true,
+	"php.validate.run": "onType",
+	"php.validate.require": true,
+	"php.suggest.basic": true,
+	"php.debug.enable": true,
+	"php.debug.ideKey": "VSCODE",
+	"php.debug.port": 9003,
+	"php.debug.xdebug": {
+		"path": "C:\\xampp\\php\\ext\\php_xdebug.dll",
+		"start_with_request": "yes"
+	},
+	"php.executablePath": "C:\\xampp\\php\\php.exe",
+	"php.format.enable": true,
+	"php.format.psr12": true,
+	"php.suggest.basic": true,
+	"files.associations": {
+		"*.php": "php"
+	},
+	"editor.formatOnSave": true,
+	"editor.formatOnType": true,
+	"editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
+	"intelephense.environment.phpVersion": "8.2",
+	"intelephense.format.braces": "k&r",
+	"intelephense.format.enable": true,
+	"intelephense.completion.insertUseDeclaration": true,
+	"intelephense.diagnostics.undefinedTypes": true,
+	"intelephense.diagnostics.undefinedFunctions": true,
+	"intelephense.diagnostics.undefinedConstants": true,
+	"intelephense.diagnostics.undefinedClassConstants": true,
+	"intelephense.diagnostics.undefinedMethods": true,
+	"intelephense.diagnostics.undefinedProperties": true,
+	"intelephense.diagnostics.undefinedVariables": true,
+	"intelephense.diagnostics.deprecated": true,
+	"intelephense.diagnostics.missingDocblock": true
+}

@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-Gaz - Profesjonalne instalacje gazowe LPG/CNG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #4ade80;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #4ade80;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/600') center/cover no-repeat;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #4ade80;
+            color: #1e3a8a;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #22c55e;
+            transform: translateY(-3px);
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* About Section */
+        .about {
+            background-color: #f9fafb;
+        }
+
+        .about-content {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .about-image {
+            flex: 1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .about-text {
+            flex: 1;
+        }
+
+        .about-text h3 {
+            font-size: 28px;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+        }
+
+        .about-text p {
+            margin-bottom: 20px;
+        }
+
+        /* Services */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .service-icon {
+            font-size: 48px;
+            color: #4ade80;
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #1e3a8a;
+        }
+
+        /* Benefits */
+        .benefits {
+            background-color: #1e3a8a;
+            color: white;
+        }
+
+        .benefits .section-title h2 {
+            color: white;
+        }
+
+        .benefits .section-title p {
+            color: #e5e7eb;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .benefit-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .benefit-icon {
+            font-size: 40px;
+            color: #4ade80;
+            margin-bottom: 15px;
+        }
+
+        .benefit-item h3 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        /* Gallery */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .gallery-item {
+            border-radius: 8px;
+            overflow: hidden;
+            height: 200px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            background-color: #f9fafb;
+        }
+
+        .testimonial-slider {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .testimonial {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .testimonial-text {
+            font-size: 18px;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .client-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .client-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .client-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .client-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #1e3a8a;
+        }
+
+        .client-position {
+            color: #666;
+        }
+
+        /* FAQ */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        .faq-question {
+            padding: 20px;
+            background-color: #f9fafb;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .faq-answer p {
+            padding: 20px 0;
+        }
+
+        .faq-answer.active {
+            max-height: 200px;
+        }
+
+        /* Contact */
+        .contact-container {
+            display: flex;
+            gap: 40px;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-form {
+            flex: 1;
+        }
+
+        .info-item {
+            display: flex;
+            margin-bottom: 25px;
+            align-items: flex-start;
+        }
+
+        .info-icon {
+            font-size: 24px;
+            color: #4ade80;
+            margin-right: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        textarea.form-control {
+            height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0f172a;
+            color: #e5e7eb;
+            padding: 60px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #e5e7eb;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column ul li a:hover {
+            color: #4ade80;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #374151;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 20px;
+            }
+
+            nav ul {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .about-content {
+                flex-direction: column;
+            }
+
+            .contact-container {
+                flex-direction: column;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">Auto-<span>Gaz</span></div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Główna</a></li>
+                    <li><a href="#about">O Nas</a></li>
+                    <li><a href="#services">Usługi</a></li>
+                    <li><a href="#benefits">Korzyści</a></li>
+                    <li><a href="#gallery">Realizacje</a></li>
+                    <li><a href="#testimonials">Opinie</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#contact">Kontakt</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu-btn">☰</button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container hero-content">
+            <h1>Profesjonalne instalacje gazowe do twojego samochodu</h1>
+            <p>Zaoszczędź do 50% kosztów paliwa dzięki naszym nowoczesnym systemom LPG i CNG. Ekologiczne rozwiązanie z profesjonalnym montażem i gwarancją.</p>
+            <a href="#contact" class="btn">Umów się na montaż</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-title">
+                <h2>O Naszej Firmie</h2>
+                <p>Od ponad 15 lat specjalizujemy się w profesjonalnym montażu instalacji gazowych do wszystkich typów samochodów.</p>
+            </div>
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="/api/placeholder/600/400" alt="Warsztat Auto-Gaz">
+                </div>
+                <div class="about-text">
+                    <h3>Doświadczenie i profesjonalizm</h3>
+                    <p>Nasza firma to zespół doświadczonych specjalistów, którzy zamontowali instalacje gazowe w ponad 5000 samochodów różnych marek i modeli. Korzystamy wyłącznie z certyfikowanych komponentów renomowanych producentów, zapewniając najwyższą jakość i bezpieczeństwo.</p>
+                    <p>Dzięki ciągłemu szkoleniu i inwestycjom w najnowocześniejszy sprzęt diagnostyczny, oferujemy rozwiązania dopasowane do indywidualnych potrzeb każdego klienta i specyfiki jego pojazdu.</p>
+                    <a href="#services" class="btn">Poznaj nasze usługi</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nasze Usługi</h2>
+                <p>Oferujemy kompleksowe rozwiązania w zakresie instalacji gazowych LPG i CNG do pojazdów osobowych i dostawczych.</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🔧</div>
+                    <h3>Montaż instalacji LPG</h3>
+                    <p>Profesjonalny montaż systemów LPG 4-generacji z sekwencyjnym wtryskiem gazu - najnowocześniejsze rozwiązanie dla silników z wtryskiem paliwa.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔩</div>
+                    <h3>Instalacje do silników Turbo</h3>
+                    <p>Specjalistyczne systemy dostosowane do pracy z silnikami turbodoładowanymi, zapewniające pełną moc i ochronę turbiny.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">⚙️</div>
+                    <h3>Montaż instalacji CNG</h3>
+                    <p>Systemy zasilania sprężonym gazem ziemnym (CNG) - idealne rozwiązanie dla firm z dużymi flotami pojazdów.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔄</div>
+                    <h3>Serwis i przeglądy</h3>
+                    <p>Regularne przeglądy, diagnostyka i serwis zamontowanych instalacji gazowych wszystkich typów i producentów.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📋</div>
+                    <h3>Homologacje i dokumentacja</h3>
+                    <p>Kompleksowa obsługa formalna związana z rejestracją zmian w dowodzie rejestracyjnym.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🛠️</div>
+                    <h3>Naprawy i modernizacje</h3>
+                    <p>Naprawy i modernizacje istniejących instalacji gazowych, wymiana zużytych komponentów.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits" class="benefits">
+        <div class="container">
+            <div class="section-title">
+                <h2>Korzyści z instalacji gazowej</h2>
+                <p>Poznaj zalety korzystania z instalacji gazowej w Twoim samochodzie</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">💰</div>
+                    <h3>Oszczędność pieniędzy</h3>
+                    <p>Redukcja kosztów paliwa nawet o 50% w porównaniu do benzyny.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🌿</div>
+                    <h3>Ekologia</h3>
+                    <p>Mniejsza emisja szkodliwych substancji do atmosfery, niższa emisja CO2.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">⚡</div>
+                    <h3>Wydłużenie żywotności silnika</h3>
+                    <p>Gaz spala się czyściej niż benzyna, co zmniejsza zużycie silnika.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">🔄</div>
+                    <h3>Dwupaliwowy system</h3>
+                    <p>Możliwość przełączania między gazem a benzyną zwiększa zasięg pojazdu.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nasze Realizacje</h2>
+                <p>Zobacz przykładowe montaże instalacji gazowych w różnych modelach samochodów</p>
+            </div>
+            <div class="gallery-container">
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Instalacja w BMW">
+                </div>
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Instalacja w Audi">
+                </div>
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Instalacja w Mercedes">
+                </div>
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Instalacja w Toyota">
+                </div>
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Instalacja w Volkswagen">
+                </div>
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/300" alt="Instalacja w Ford">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>Opinie Klientów</h2>
+                <p>Co mówią o nas nasi klienci</p>
+            </div>
+            <div class="testimonial-slider">
+                <div class="testimonial">
+                    <div class="testimonial-text">
+                        "Profesjonalny montaż, świetna obsługa i co najważniejsze - odczuwalne oszczędności na paliwie. Zdecydowanie polecam Auto-Gaz każdemu, kto myśli o instalacji LPG."
+                    </div>
+                    <div class="client-info">
+                        <div class="client-image">
+                            <img src="/api/placeholder/100/100" alt="Jan Kowalski">
+                        </div>
+                        <div class="client-name">Jan Kowalski</div>
+                        <div class="client-position">BMW Seria 3</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq">
+        <div class="container">
+            <div class="section-title">
+                <h2>Często Zadawane Pytania</h2>
+                <p>Odpowiedzi na najczęściej zadawane pytania dotyczące instalacji gazowych</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Czy każdy samochód można wyposażyć w instalację gazową?
+                        <span class="toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Zdecydowana większość samochodów może być wyposażona w instalację gazową, jednak istnieją pewne ograniczenia. Nie zaleca się montażu w silnikach z bezpośrednim wtryskiem paliwa starszego typu oraz w niektórych silnikach wysokiej mocy. W naszym serwisie przeprowadzamy indywidualną ocenę techniczną każdego pojazdu.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Ile kosztuje instalacja gazowa?
+                        <span class="toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Koszt instalacji zależy od kilku czynników: typu silnika, liczby cylindrów, mocy, rodzaju wybranego systemu oraz producenta komponentów. Ceny zaczynają się od około 2500 zł dla prostszych instalacji, a kończą na około 6000 zł dla zaawansowanych systemów do silników o dużej mocy.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Jak długo trwa montaż instalacji gazowej?
+                        <span class="toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Standardowy montaż instalacji gazowej zajmuje zazwyczaj 1-2 dni robocze. Czas może się różnić w zależności od złożoności silnika i wybranego systemu. Po montażu przeprowadzamy szczegółowe testy i kalibrację, aby zapewnić optymalne działanie.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Jak często należy serwisować instalację gazową?
+                        <span class="toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Zalecamy przeprowadzenie przeglądu instalacji gazowej co 10-15 tysięcy kilometrów lub raz w roku. Podczas przeglądu wymieniamy filtry, sprawdzamy szczelność systemu i wykonujemy regulację. Regularny serwis zapewnia bezpieczeństwo, ekonomiczną pracę i długą żywotność zarówno instalacji, jak i silnika.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        Czy instalacja gazowa wpływa na osiągi samochodu?
+                        <span class="toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Nowoczesne instalacje gazowe 4-generacji powodują minimalny spadek mocy (zazwyczaj około 5-10%), który jest praktycznie nieodczuwalny podczas normalnej jazdy. Właściwie dobrana i wyregulowana instalacja zapewnia płynną pracę silnika i podobne osiągi jak na benzynie.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Skontaktuj się z nami</h2>
+                <p>Umów się na montaż lub zadaj pytanie</p>
+            </div>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div>
+                            <h3>Adres</h3>
+                            <p>ul. Warsztatowa 123<br>00-000 Warszawa</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📱</div>
+                        <div>
+                            <h3>Telefon</h3>
+                            <p>+48 123 456 789</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">✉️</div>
+                        <div>
+                            <h3>Email</h3>
+                            <p>kontakt@auto-gaz.pl</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🕒</div>
+                        <div>
+                            <h3>Godziny otwarcia</h3>
+                            <p>Pon-Pt: 8:00 - 18:00<br>Sobota: 9:00 - 14:00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form action="#" method="post">
+                        <div class="form-group">
+                            <label for="name">Imię i nazwisko</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Telefon</label>
+                            <input type="tel" id="phone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="car">Marka i model samochodu</label>
+                            <input type="text" id="car" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Wiadomość</label>
+                            <textarea id="message" class="form-control" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn">Wyślij wiadomość</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Auto-Gaz</h3>
+                    <p>Profesjonalne instalacje gazowe LPG i CNG do samochodów osobowych i dostawczych.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Szybki kontakt</h3>
+                    <ul>
+                        <li>📍 ul. Warsztatowa 123, Warszawa</li>
+                        <li>📱 +48 123 456 789</li>
+                        <li>✉️ kontakt@auto-gaz.pl</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Nawigacja</h3>
+                    <ul>
+                        <li><a href="#home">Główna</a></li>
+                        <li><a href="#about">O Nas</a></li>
+                        <li><a href="#services">Usługi</a></li>
+                        <li><a href="#benefits">Korzyści</a></li>
+                        <li><a href="#gallery">Realizacje</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Godziny otwarcia</h3>
+                    <ul>
+                        <li>Poniedziałek - Piątek: 8:00 - 18:00</li>
+                        <li>Sobota: 9:00 - 14:00</li>
+                        <li>Niedziela: Zamknięte</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Auto-Gaz - Wszystkie prawa zastrzeżone</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
