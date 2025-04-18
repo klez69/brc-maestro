@@ -1074,3 +1074,127 @@
 [18-Apr-2025 08:53:02 Europe/Warsaw] [2025-04-18 08:53:02] Database error: SQLSTATE[HY093]: Invalid parameter number
 [18-Apr-2025 08:54:02 Europe/Warsaw] [2025-04-18 08:54:02] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
 [18-Apr-2025 08:54:02 Europe/Warsaw] [2025-04-18 08:54:02] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:17:43 Europe/Warsaw] [2025-04-18 10:17:43] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:17:43 Europe/Warsaw] [2025-04-18 10:17:43] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:18:00 Europe/Warsaw] [2025-04-18 10:18:00] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:18:00 Europe/Warsaw] [2025-04-18 10:18:00] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:18:14 Europe/Warsaw] [2025-04-18 10:18:14] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:18:14 Europe/Warsaw] [2025-04-18 10:18:14] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:18:30 Europe/Warsaw] [2025-04-18 10:18:30] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:18:30 Europe/Warsaw] [2025-04-18 10:18:30] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:18:44 Europe/Warsaw] [2025-04-18 10:18:44] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:18:44 Europe/Warsaw] [2025-04-18 10:18:44] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:19:00 Europe/Warsaw] [2025-04-18 10:19:00] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:19:00 Europe/Warsaw] [2025-04-18 10:19:00] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:19:31 Europe/Warsaw] [2025-04-18 10:19:31] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:19:31 Europe/Warsaw] [2025-04-18 10:19:31] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:19:38 Europe/Warsaw] [2025-04-18 10:19:38] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:19:38 Europe/Warsaw] [2025-04-18 10:19:38] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:19:48 Europe/Warsaw] [2025-04-18 10:19:48] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:19:48 Europe/Warsaw] [2025-04-18 10:19:48] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:19:50 Europe/Warsaw] [2025-04-18 10:19:50] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:19:50 Europe/Warsaw] [2025-04-18 10:19:50] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:20:21 Europe/Warsaw] [2025-04-18 10:20:21] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:20:21 Europe/Warsaw] [2025-04-18 10:20:21] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:20:51 Europe/Warsaw] [2025-04-18 10:20:51] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:20:51 Europe/Warsaw] [2025-04-18 10:20:51] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:21:10 Europe/Warsaw] [2025-04-18 10:21:10] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:21:10 Europe/Warsaw] [2025-04-18 10:21:10] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:21:13 Europe/Warsaw] [2025-04-18 10:21:13] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:21:13 Europe/Warsaw] [2025-04-18 10:21:13] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:21:43 Europe/Warsaw] [2025-04-18 10:21:43] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:21:43 Europe/Warsaw] [2025-04-18 10:21:43] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:22:03 Europe/Warsaw] [2025-04-18 10:22:03] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:22:03 Europe/Warsaw] [2025-04-18 10:22:03] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:22:06 Europe/Warsaw] [2025-04-18 10:22:06] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:22:06 Europe/Warsaw] [2025-04-18 10:22:06] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:22:07 Europe/Warsaw] [2025-04-18 10:22:07] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:22:07 Europe/Warsaw] [2025-04-18 10:22:07] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:22:09 Europe/Warsaw] [2025-04-18 10:22:09] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:22:09 Europe/Warsaw] [2025-04-18 10:22:09] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:23:16 Europe/Warsaw] [2025-04-18 10:23:16] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:23:16 Europe/Warsaw] [2025-04-18 10:23:16] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:26:29 Europe/Warsaw] [2025-04-18 10:26:29] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:26:29 Europe/Warsaw] [2025-04-18 10:26:29] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:26:59 Europe/Warsaw] [2025-04-18 10:26:59] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:26:59 Europe/Warsaw] [2025-04-18 10:26:59] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:27:30 Europe/Warsaw] [2025-04-18 10:27:30] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:27:30 Europe/Warsaw] [2025-04-18 10:27:30] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:28:00 Europe/Warsaw] [2025-04-18 10:28:00] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:28:00 Europe/Warsaw] [2025-04-18 10:28:00] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:28:30 Europe/Warsaw] [2025-04-18 10:28:30] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:28:30 Europe/Warsaw] [2025-04-18 10:28:30] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:29:02 Europe/Warsaw] [2025-04-18 10:29:02] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:29:02 Europe/Warsaw] [2025-04-18 10:29:02] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:30:02 Europe/Warsaw] [2025-04-18 10:30:02] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:30:02 Europe/Warsaw] [2025-04-18 10:30:02] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:31:02 Europe/Warsaw] [2025-04-18 10:31:02] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:31:02 Europe/Warsaw] [2025-04-18 10:31:02] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:31:36 Europe/Warsaw] [2025-04-18 10:31:36] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:31:36 Europe/Warsaw] [2025-04-18 10:31:36] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:31:59 Europe/Warsaw] [2025-04-18 10:31:59] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:31:59 Europe/Warsaw] [2025-04-18 10:31:59] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:32:29 Europe/Warsaw] [2025-04-18 10:32:29] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:32:29 Europe/Warsaw] [2025-04-18 10:32:29] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:32:59 Europe/Warsaw] [2025-04-18 10:32:59] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:32:59 Europe/Warsaw] [2025-04-18 10:32:59] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:33:29 Europe/Warsaw] [2025-04-18 10:33:29] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:33:29 Europe/Warsaw] [2025-04-18 10:33:29] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:34:00 Europe/Warsaw] [2025-04-18 10:34:00] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:34:00 Europe/Warsaw] [2025-04-18 10:34:00] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:34:30 Europe/Warsaw] [2025-04-18 10:34:30] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:34:30 Europe/Warsaw] [2025-04-18 10:34:30] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:35:02 Europe/Warsaw] [2025-04-18 10:35:02] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:35:02 Europe/Warsaw] [2025-04-18 10:35:02] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:36:02 Europe/Warsaw] [2025-04-18 10:36:02] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:36:02 Europe/Warsaw] [2025-04-18 10:36:02] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 10:36:32 Europe/Warsaw] [2025-04-18 10:36:32] Error updating visitor: SQLSTATE[HY093]: Invalid parameter number Context: {"page":"\/"}
+[18-Apr-2025 10:36:32 Europe/Warsaw] [2025-04-18 10:36:32] Database error: SQLSTATE[HY093]: Invalid parameter number
+[18-Apr-2025 11:00:48 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:00:48 Europe/Warsaw] [2025-04-18 11:00:48] API Error: Database connection failed
+[18-Apr-2025 11:00:50 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:00:50 Europe/Warsaw] [2025-04-18 11:00:50] API Error: Database connection failed
+[18-Apr-2025 11:00:56 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:00:56 Europe/Warsaw] [2025-04-18 11:00:56] API Error: Database connection failed
+[18-Apr-2025 11:01:27 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:01:27 Europe/Warsaw] [2025-04-18 11:01:27] API Error: Database connection failed
+[18-Apr-2025 11:01:38 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:01:38 Europe/Warsaw] [2025-04-18 11:01:38] API Error: Database connection failed
+[18-Apr-2025 11:02:08 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:02:08 Europe/Warsaw] [2025-04-18 11:02:08] API Error: Database connection failed
+[18-Apr-2025 11:02:29 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:02:29 Europe/Warsaw] [2025-04-18 11:02:29] API Error: Database connection failed
+[18-Apr-2025 11:02:40 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:02:40 Europe/Warsaw] [2025-04-18 11:02:40] API Error: Database connection failed
+[18-Apr-2025 11:03:10 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:03:10 Europe/Warsaw] [2025-04-18 11:03:10] API Error: Database connection failed
+[18-Apr-2025 11:03:40 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:03:40 Europe/Warsaw] [2025-04-18 11:03:40] API Error: Database connection failed
+[18-Apr-2025 11:04:10 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:04:10 Europe/Warsaw] [2025-04-18 11:04:10] API Error: Database connection failed
+[18-Apr-2025 11:04:35 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:04:35 Europe/Warsaw] [2025-04-18 11:04:35] API Error: Database connection failed
+[18-Apr-2025 11:04:41 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:04:41 Europe/Warsaw] [2025-04-18 11:04:41] API Error: Database connection failed
+[18-Apr-2025 11:05:11 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:05:11 Europe/Warsaw] [2025-04-18 11:05:11] API Error: Database connection failed
+[18-Apr-2025 11:05:41 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:05:41 Europe/Warsaw] [2025-04-18 11:05:41] API Error: Database connection failed
+[18-Apr-2025 11:06:11 Europe/Warsaw] Database Connection Error: SQLSTATE[HY000] [2002] No such file or directory
+[18-Apr-2025 11:06:11 Europe/Warsaw] [2025-04-18 11:06:11] API Error: Database connection failed
+[18-Apr-2025 11:57:56 Europe/Warsaw] [2025-04-18 11:57:56] Error updating visitor: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list' Context: {"page":"\/"}
+[18-Apr-2025 11:57:56 Europe/Warsaw] [2025-04-18 11:57:56] Database error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list'
+[18-Apr-2025 11:58:15 Europe/Warsaw] [2025-04-18 11:58:15] Error updating visitor: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list' Context: {"page":"\/"}
+[18-Apr-2025 11:58:15 Europe/Warsaw] [2025-04-18 11:58:15] Database error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list'
+[18-Apr-2025 11:58:45 Europe/Warsaw] [2025-04-18 11:58:45] Error updating visitor: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list' Context: {"page":"\/"}
+[18-Apr-2025 11:58:45 Europe/Warsaw] [2025-04-18 11:58:45] Database error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list'
+[18-Apr-2025 11:59:15 Europe/Warsaw] [2025-04-18 11:59:15] Error updating visitor: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list' Context: {"page":"\/"}
+[18-Apr-2025 11:59:15 Europe/Warsaw] [2025-04-18 11:59:15] Database error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list'
+[18-Apr-2025 11:59:31 Europe/Warsaw] [2025-04-18 11:59:31] Error updating visitor: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list' Context: {"page":"\/"}
+[18-Apr-2025 11:59:31 Europe/Warsaw] [2025-04-18 11:59:31] Database error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list'
+[18-Apr-2025 11:59:49 Europe/Warsaw] [2025-04-18 11:59:49] Error updating visitor: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list' Context: {"page":"\/"}
+[18-Apr-2025 11:59:49 Europe/Warsaw] [2025-04-18 11:59:49] Database error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list'
+[18-Apr-2025 11:59:51 Europe/Warsaw] [2025-04-18 11:59:51] Error updating visitor: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list' Context: {"page":"\/"}
+[18-Apr-2025 11:59:51 Europe/Warsaw] [2025-04-18 11:59:51] Database error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list'
+[18-Apr-2025 12:00:21 Europe/Warsaw] [2025-04-18 12:00:21] Error updating visitor: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list' Context: {"page":"\/"}
+[18-Apr-2025 12:00:21 Europe/Warsaw] [2025-04-18 12:00:21] Database error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'page' in 'field list'

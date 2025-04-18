@@ -1039,27 +1039,3 @@ function initializePortfolioFilters() {
 		allButton.click()
 	}
 }
-
-document.getElementById('contactForm').addEventListener('submit', function (e) {
-	e.preventDefault()
-
-	const formData = new FormData(this)
-
-	fetch('process_form.php', {
-		method: 'POST',
-		body: formData,
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.success) {
-				alert('Wiadomość została wysłana pomyślnie!')
-				this.reset()
-			} else {
-				alert('Wystąpił błąd podczas wysyłania wiadomości.')
-			}
-		})
-		.catch(error => {
-			console.error('Error:', error)
-			alert('Wystąpił błąd podczas wysyłania wiadomości.')
-		})
-})

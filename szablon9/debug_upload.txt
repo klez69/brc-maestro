@@ -1118,3 +1118,34 @@ Data: Array
     [file_path] => images/uploads/68014d907dcbc.jpg
 )
 
+2025-04-18 10:26:23 - Rozpoczęcie uploadu
+Data: Array
+(
+    [image] => Array
+        (
+            [name] => 5.jpg
+            [full_path] => 5.jpg
+            [type] => image/jpeg
+            [tmp_name] => /usr/local/php83/tmp/phpN0qxfD
+            [error] => 0
+            [size] => 778253
+        )
+
+)
+
+2025-04-18 10:26:23 - Próba przeniesienia pliku
+Data: Array
+(
+    [source] => /usr/local/php83/tmp/phpN0qxfD
+    [target] => /home/users/migdalta/public_html/szablon9/images/uploads/68020caf1e55f.jpg
+    [permissions] => 0770
+)
+
+2025-04-18 10:26:23 - Upload zakończony sukcesem
+Data: Array
+(
+    [success] => 1
+    [message] => Plik został przesłany pomyślnie
+    [file_path] => images/uploads/68020caf1e55f.jpg
+)
+
