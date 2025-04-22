@@ -239,25 +239,21 @@ function updateVisitor($pdo, $page) {
             $visitor_id = $_COOKIE['visitor_id'];
         }
         
-        // Prepare visitor data
-        $visitorData = [
-            ':id' => $visitor_id,
-            ':page' => $data['page_url'] ?? $page,
-            ':referrer' => $data['referrer'] ?? null,
-            ':user_agent' => $data['user_agent'] ?? null,
-            ':screen_resolution' => $data['screen_resolution'] ?? null,
-            ':language' => $data['language'] ?? null,
-            ':ip_address' => $ip_address
-        ];
+        // Get page URL from data or default to passed page parameter
+        $pageUrl = $data['page_url'] ?? $page;
+        $referrer = $data['referrer'] ?? null;
+        $userAgent = $data['user_agent'] ?? null;
+        $screenResolution = $data['screen_resolution'] ?? null;
+        $language = $data['language'] ?? null;
         
         // Begin transaction
         $pdo->beginTransaction();
         
-        // Update active visitors table
+        // Update active visitors table - using direct variable binding to ensure all parameters match
         $sql = "INSERT INTO visitors 
                 (id, page, referrer, user_agent, screen_resolution, language, ip_address, last_activity)
                 VALUES 
-                (:id, :page, :referrer, :user_agent, :screen_resolution, :language, :ip_address, NOW())
+                (?, ?, ?, ?, ?, ?, ?, NOW())
                 ON DUPLICATE KEY UPDATE 
                     page = VALUES(page),
                     referrer = VALUES(referrer),
@@ -268,16 +264,16 @@ function updateVisitor($pdo, $page) {
                     last_activity = NOW()";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->execute($visitorData);
+        $stmt->execute([$visitor_id, $pageUrl, $referrer, $userAgent, $screenResolution, $language, $ip_address]);
         
-        // Add to visitor history
+        // Add to visitor history - using direct variable binding to ensure all parameters match
         $sql = "INSERT INTO visitor_history 
                 (visitor_id, page, referrer, user_agent, screen_resolution, language, ip_address)
                 VALUES 
-                (:id, :page, :referrer, :user_agent, :screen_resolution, :language, :ip_address)";
+                (?, ?, ?, ?, ?, ?, ?)";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->execute($visitorData);
+        $stmt->execute([$visitor_id, $pageUrl, $referrer, $userAgent, $screenResolution, $language, $ip_address]);
         
         // Commit transaction
         $pdo->commit();
