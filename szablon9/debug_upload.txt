@@ -1149,3 +1149,96 @@ Data: Array
     [file_path] => images/uploads/68020caf1e55f.jpg
 )
 
+2025-04-18 12:01:45 - Rozpoczęcie uploadu
+Data: Array
+(
+    [image] => Array
+        (
+            [name] => 14.jpg
+            [full_path] => 14.jpg
+            [type] => image/jpeg
+            [tmp_name] => /usr/local/php83/tmp/phpO2BGPe
+            [error] => 0
+            [size] => 441168
+        )
+
+)
+
+2025-04-18 12:01:45 - Próba przeniesienia pliku
+Data: Array
+(
+    [source] => /usr/local/php83/tmp/phpO2BGPe
+    [target] => /home/users/migdalta/public_html/szablon9/images/uploads/680223091dffe.jpg
+    [permissions] => 0770
+)
+
+2025-04-18 12:01:45 - Upload zakończony sukcesem
+Data: Array
+(
+    [success] => 1
+    [message] => Plik został przesłany pomyślnie
+    [file_path] => images/uploads/680223091dffe.jpg
+)
+
+2025-04-18 12:30:07 - Rozpoczęcie uploadu
+Data: Array
+(
+    [image] => Array
+        (
+            [name] => 23.jpg
+            [full_path] => 23.jpg
+            [type] => image/jpeg
+            [tmp_name] => /usr/local/php83/tmp/phpvIcqJv
+            [error] => 0
+            [size] => 404728
+        )
+
+)
+
+2025-04-18 12:30:07 - Próba przeniesienia pliku
+Data: Array
+(
+    [source] => /usr/local/php83/tmp/phpvIcqJv
+    [target] => /home/users/migdalta/public_html/szablon9/images/uploads/680229af53594.jpg
+    [permissions] => 0770
+)
+
+2025-04-18 12:30:07 - Upload zakończony sukcesem
+Data: Array
+(
+    [success] => 1
+    [message] => Plik został przesłany pomyślnie
+    [file_path] => images/uploads/680229af53594.jpg
+)
+
+2025-04-18 12:30:31 - Rozpoczęcie uploadu
+Data: Array
+(
+    [image] => Array
+        (
+            [name] => 21.jpg
+            [full_path] => 21.jpg
+            [type] => image/jpeg
+            [tmp_name] => /usr/local/php83/tmp/phpg1E5L8
+            [error] => 0
+            [size] => 514242
+        )
+
+)
+
+2025-04-18 12:30:31 - Próba przeniesienia pliku
+Data: Array
+(
+    [source] => /usr/local/php83/tmp/phpg1E5L8
+    [target] => /home/users/migdalta/public_html/szablon9/images/uploads/680229c7a8663.jpg
+    [permissions] => 0770
+)
+
+2025-04-18 12:30:31 - Upload zakończony sukcesem
+Data: Array
+(
+    [success] => 1
+    [message] => Plik został przesłany pomyślnie
+    [file_path] => images/uploads/680229c7a8663.jpg
+)
+

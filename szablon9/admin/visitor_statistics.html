@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Visitor Statistics</title>
+		<link rel="stylesheet" href="../css/bootstrap.min.css" />
+		<link rel="stylesheet" href="../css/admin.css" />
+		<script src="../js/chart.min.js"></script>
+		<style>
+			.chart-container {
+				position: relative;
+				height: 300px;
+				width: 100%;
+				margin-bottom: 30px;
+			}
+			.stats-card {
+				border-radius: 10px;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+				padding: 20px;
+				margin-bottom: 20px;
+				background-color: white;
+			}
+			.stats-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 15px;
+			}
+			.refresh-btn {
+				font-size: 14px;
+			}
+			.visitor-list {
+				max-height: 300px;
+				overflow-y: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<nav class="col-md-2 d-none d-md-block sidebar">
+					<div class="sidebar-sticky">
+						<ul class="nav flex-column">
+							<li class="nav-item">
+								<a class="nav-link" href="dashboard.html"> Dashboard </a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link active" href="visitor_statistics.html"> Visitor Statistics </a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="settings.html"> Settings </a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="logout.php"> Logout </a>
+							</li>
+						</ul>
+					</div>
+				</nav>
+
+				<main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4">
+					<div
+						class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+					>
+						<h1 class="h2">Visitor Statistics</h1>
+						<div class="btn-toolbar mb-2 mb-md-0">
+							<button type="button" class="btn btn-sm btn-outline-secondary" id="refresh-all">Refresh All</button>
+						</div>
+					</div>
+
+					<div class="row">
+						<!-- Active Visitors Card -->
+						<div class="col-md-4">
+							<div class="stats-card">
+								<div class="stats-header">
+									<h5>Active Visitors</h5>
+									<button class="btn btn-sm btn-outline-primary refresh-btn" data-target="active">Refresh</button>
+								</div>
+								<h2 id="active-visitor-count">0</h2>
+								<div class="visitor-list" id="active-visitor-list">
+									<p class="text-muted">Loading visitor data...</p>
+								</div>
+							</div>
+						</div>
+
+						<!-- Popular Pages Card -->
+						<div class="col-md-8">
+							<div class="stats-card">
+								<div class="stats-header">
+									<h5>Most Popular Pages (24h)</h5>
+									<button class="btn btn-sm btn-outline-primary refresh-btn" data-target="popular">Refresh</button>
+								</div>
+								<div class="chart-container">
+									<canvas id="popular-pages-chart"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<!-- Weekly Trends Card -->
+						<div class="col-md-12">
+							<div class="stats-card">
+								<div class="stats-header">
+									<h5>Weekly Visitor Trends</h5>
+									<button class="btn btn-sm btn-outline-primary refresh-btn" data-target="weekly">Refresh</button>
+								</div>
+								<div class="chart-container">
+									<canvas id="weekly-trends-chart"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+				</main>
+			</div>
+		</div>
+
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/bootstrap.bundle.min.js"></script>
+		<script>
+			// Chart objects
+			let popularPagesChart
+			let weeklyTrendsChart
+
+			// Function to format date string
+			function formatDate(dateStr) {
+				const date = new Date(dateStr)
+				return date.toLocaleDateString()
+			}
+
+			// Function to format time
+			function formatTime(timeStr) {
+				const date = new Date(timeStr)
+				return date.toLocaleTimeString()
+			}
+
+			// Initialize charts
+			function initCharts() {
+				// Popular Pages Chart
+				const popularPagesCtx = document.getElementById('popular-pages-chart').getContext('2d')
+				popularPagesChart = new Chart(popularPagesCtx, {
+					type: 'bar',
+					data: {
+						labels: [],
+						datasets: [
+							{
+								label: 'Page Views',
+								data: [],
+								backgroundColor: 'rgba(54, 162, 235, 0.6)',
+								borderColor: 'rgba(54, 162, 235, 1)',
+								borderWidth: 1,
+							},
+						],
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						scales: {
+							y: {
+								beginAtZero: true,
+								ticks: {
+									precision: 0,
+								},
+							},
+						},
+					},
+				})
+
+				// Weekly Trends Chart
+				const weeklyTrendsCtx = document.getElementById('weekly-trends-chart').getContext('2d')
+				weeklyTrendsChart = new Chart(weeklyTrendsCtx, {
+					type: 'line',
+					data: {
+						labels: [],
+						datasets: [
+							{
+								label: 'Unique Visitors',
+								data: [],
+								fill: false,
+								borderColor: 'rgba(75, 192, 192, 1)',
+								tension: 0.1,
+							},
+						],
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						scales: {
+							y: {
+								beginAtZero: true,
+								ticks: {
+									precision: 0,
+								},
+							},
+						},
+					},
+				})
+			}
+
+			// Function to load active visitors
+			function loadActiveVisitors() {
+				fetch('visitor_stats.php?action=active')
+					.then(response => response.json())
+					.then(data => {
+						if (data.status === 'success') {
+							// Update active visitor count
+							const visitorCount = data.activeVisitors.length
+							document.getElementById('active-visitor-count').textContent = visitorCount
+
+							// Update visitor list
+							const visitorList = document.getElementById('active-visitor-list')
+							if (visitorCount > 0) {
+								let html = '<ul class="list-group">'
+								data.activeVisitors.forEach(visitor => {
+									html += `<li class="list-group-item">
+                                    <div><strong>Page:</strong> ${visitor.page}</div>
+                                    <div><small>Last activity: ${formatTime(visitor.last_activity)}</small></div>
+                                </li>`
+								})
+								html += '</ul>'
+								visitorList.innerHTML = html
+							} else {
+								visitorList.innerHTML = '<p class="text-muted">No active visitors</p>'
+							}
+						} else {
+							console.error('Error loading active visitors:', data.message)
+						}
+					})
+					.catch(error => {
+						console.error('Error fetching active visitors:', error)
+					})
+			}
+
+			// Function to load popular pages
+			function loadPopularPages() {
+				fetch('visitor_stats.php?action=popular')
+					.then(response => response.json())
+					.then(data => {
+						if (data.status === 'success') {
+							// Update chart
+							const pages = data.popularPages.map(page => {
+								// Truncate long URLs for display
+								const url = page.page
+								return url.length > 30 ? url.substring(0, 27) + '...' : url
+							})
+							const counts = data.popularPages.map(page => page.visit_count)
+
+							popularPagesChart.data.labels = pages
+							popularPagesChart.data.datasets[0].data = counts
+							popularPagesChart.update()
+						} else {
+							console.error('Error loading popular pages:', data.message)
+						}
+					})
+					.catch(error => {
+						console.error('Error fetching popular pages:', error)
+					})
+			}
+
+			// Function to load weekly stats
+			function loadWeeklyStats() {
+				fetch('visitor_stats.php?action=weekly')
+					.then(response => response.json())
+					.then(data => {
+						if (data.status === 'success') {
+							// Update chart
+							const dates = data.weeklyStats.map(stat => formatDate(stat.visit_date))
+							const counts = data.weeklyStats.map(stat => stat.visitor_count)
+
+							weeklyTrendsChart.data.labels = dates
+							weeklyTrendsChart.data.datasets[0].data = counts
+							weeklyTrendsChart.update()
+						} else {
+							console.error('Error loading weekly stats:', data.message)
+						}
+					})
+					.catch(error => {
+						console.error('Error fetching weekly stats:', error)
+					})
+			}
+
+			// Function to load all data
+			function loadAllData() {
+				loadActiveVisitors()
+				loadPopularPages()
+				loadWeeklyStats()
+			}
+
+			// Initialize page
+			document.addEventListener('DOMContentLoaded', function () {
+				// Initialize charts
+				initCharts()
+
+				// Load initial data
+				loadAllData()
+
+				// Set up refresh button handlers
+				document.getElementById('refresh-all').addEventListener('click', loadAllData)
+
+				document.querySelectorAll('.refresh-btn').forEach(button => {
+					button.addEventListener('click', function () {
+						const target = this.getAttribute('data-target')
+						switch (target) {
+							case 'active':
+								loadActiveVisitors()
+								break
+							case 'popular':
+								loadPopularPages()
+								break
+							case 'weekly':
+								loadWeeklyStats()
+								break
+						}
+					})
+				})
+
+				// Set up auto-refresh for active visitors every 30 seconds
+				setInterval(loadActiveVisitors, 30000)
+			})
+		</script>
+	</body>
+</html>
