@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Nowoczesna, minimalistyczna strona internetowa z ofertą, galerią i kontaktem.">
+  <meta name="keywords" content="minimalizm, usługi, portfolio, kontakt">
+  <meta name="author" content="Twoja Firma">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <title>Twoja Firma</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            krem: '#f5f0e6',
+            braz: '#4e342e'
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+
+<body class="bg-white dark:bg-braz text-braz dark:text-krem font-sans">
+
+  <!-- Nagłówek -->
+  <header class="flex justify-between items-center p-4 bg-krem dark:bg-braz sticky top-0 z-50 shadow">
+    <div class="text-2xl font-bold">Logo</div>
+    <nav class="hidden md:flex space-x-4">
+      <a href="#o-nas" class="hover:underline">O nas</a>
+      <a href="#oferta" class="hover:underline">Oferta</a>
+      <a href="#galeria" class="hover:underline">Galeria</a>
+      <a href="#kontakt" class="hover:underline">Kontakt</a>
+    </nav>
+    <button class="md:hidden">☰</button>
+    <a href="#kontakt" class="ml-4 px-4 py-2 bg-braz text-white dark:bg-krem dark:text-braz rounded-xl hover:opacity-80">Skontaktuj się</a>
+  </header>
+
+  <!-- O nas -->
+  <section id="o-nas" class="p-8 text-center">
+    <h2 class="text-4xl font-bold mb-4">O nas</h2>
+    <p class="max-w-2xl mx-auto">Jesteśmy firmą z pasją do prostoty i elegancji. Tworzymy nowoczesne rozwiązania cyfrowe.</p>
+    <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div class="p-4">🔧<br>Narzędzia nowoczesności</div>
+      <div class="p-4">💡<br>Kreatywne podejście</div>
+      <div class="p-4">🎯<br>Skuteczność</div>
+    </div>
+  </section>
+
+  <!-- Oferta -->
+  <section id="oferta" class="p-8 bg-krem dark:bg-braz">
+    <h2 class="text-4xl font-bold text-center mb-8">Nasza oferta</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="p-6 bg-white dark:bg-krem rounded shadow hover:shadow-lg transition">
+        <div class="text-3xl mb-2">📱</div>
+        <h3 class="text-xl font-semibold">Strony responsywne</h3>
+        <p>Idealne na każde urządzenie.</p>
+      </div>
+      <div class="p-6 bg-white dark:bg-krem rounded shadow hover:shadow-lg transition">
+        <div class="text-3xl mb-2">⚙️</div>
+        <h3 class="text-xl font-semibold">Panel administracyjny</h3>
+        <p>Zarządzaj treścią z łatwością.</p>
+      </div>
+      <div class="p-6 bg-white dark:bg-krem rounded shadow hover:shadow-lg transition">
+        <div class="text-3xl mb-2">🚀</div>
+        <h3 class="text-xl font-semibold">Optymalizacja SEO</h3>
+        <p>Bądź widoczny w wyszukiwarkach.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Galeria -->
+  <section id="galeria" class="p-8">
+    <h2 class="text-4xl font-bold text-center mb-8">Galeria</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <img src="/img1.jpg" alt="Projekt 1" class="rounded shadow hover:scale-105 transition">
+      <img src="/img2.jpg" alt="Projekt 2" class="rounded shadow hover:scale-105 transition">
+      <img src="/img3.jpg" alt="Projekt 3" class="rounded shadow hover:scale-105 transition">
+    </div>
+  </section>
+
+  <!-- Opinie klientów -->
+  <section class="p-8 bg-krem dark:bg-braz">
+    <h2 class="text-4xl font-bold text-center mb-8">Opinie</h2>
+    <div class="swiper-container max-w-xl mx-auto">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide p-4 bg-white dark:bg-krem rounded shadow">★★★★★<br>Świetna współpraca!</div>
+        <div class="swiper-slide p-4 bg-white dark:bg-krem rounded shadow">★★★★☆<br>Profesjonalna obsługa.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Kontakt -->
+  <section id="kontakt" class="p-8">
+    <h2 class="text-4xl font-bold text-center mb-8">Kontakt</h2>
+    <form class="max-w-xl mx-auto space-y-4">
+      <input type="text" placeholder="Imię i nazwisko" class="w-full p-2 border rounded">
+      <input type="email" placeholder="Email" class="w-full p-2 border rounded">
+      <textarea placeholder="Wiadomość" class="w-full p-2 border rounded"></textarea>
+      <button type="submit" class="bg-braz text-white px-4 py-2 rounded hover:opacity-80">Wyślij</button>
+    </form>
+    <div class="text-center mt-6">
+      <p>ul. Przykładowa 1, 00-000 Miasto</p>
+      <p>tel: 123 456 789</p>
+      <iframe src="https://www.google.com/maps/embed?..." width="100%" height="300" allowfullscreen class="mt-4 border rounded"></iframe>
+    </div>
+  </section>
+
+  <!-- Stopka -->
+  <footer class="p-4 bg-braz text-krem text-center">
+    <div class="flex justify-center space-x-4 mb-2">
+      <a href="#">Facebook</a>
+      <a href="#">Instagram</a>
+      <a href="#">LinkedIn</a>
+    </div>
+    <p>&copy; 2025 Twoja Firma. Wszelkie prawa zastrzeżone.</p>
+  </footer>
+
+  <!-- Dark Mode Toggle -->
+  <script>
+    const toggle = document.createElement('button');
+    toggle.innerText = '🌙';
+    toggle.className = 'fixed bottom-4 right-4 p-2 bg-krem dark:bg-braz rounded-full';
+    toggle.onclick = () => document.documentElement.classList.toggle('dark');
+    document.body.appendChild(toggle);
+  </script>
+
+  <!-- Slider (opinie) - SwiperJS -->
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+  <script>
+    new Swiper('.swiper-container', {
+      loop: true,
+      autoplay: {
+        delay: 4000,
+      },
+    });
+  </script>
+</body>
+
+</html>
