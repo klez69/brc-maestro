@@ -3,11 +3,9 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Panel Administratora - Aktywni Odwiedzający</title>
+		<title>Panel Administratora - Historia Odwiedzin</title>
 		<script src="https://cdn.tailwindcss.com"></script>
 		<script src="../js/auth.js"></script>
-		<script src="../js/active-visitors.js"></script>
-		<script src="../js/visitor-tracker.js"></script>
 	</head>
 	<body class="bg-gray-100">
 		<div class="min-h-screen flex">
@@ -16,8 +14,9 @@
 				<h2 class="text-2xl font-bold mb-8">Panel Admin</h2>
 				<nav>
 					<a href="dashboard.html" class="block py-2 hover:text-gray-300">Dashboard</a>
-					<a href="visitors.html" class="block py-2 hover:text-gray-300 text-yellow-400">Odwiedzający</a>
-					<a href="visitor_history.html" class="block py-2 hover:text-gray-300">Historia Odwiedzin</a>
+					<a href="visitors.html" class="block py-2 hover:text-gray-300">Odwiedzający</a>
+					<a href="visitor_history.html" class="block py-2 hover:text-gray-300 text-yellow-400">Historia Odwiedzin</a>
+					<button onclick="logout()" class="mt-8 w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
 						Wyloguj
 					</button>
 				</nav>
@@ -25,22 +24,29 @@
 
 			<!-- Main Content -->
 			<main class="flex-1 p-8">
-				<h1 class="text-3xl font-bold mb-8">Aktywni Odwiedzający</h1>
+				<h1 class="text-3xl font-bold mb-8">Historia Odwiedzin</h1>
+
+				<div class="bg-white rounded-lg shadow p-6 mb-8">
+					<div class="mb-4 flex justify-between items-center">
+						<h2 class="text-xl font-semibold">Filtrowanie historii</h2>
+						<div class="flex items-center gap-4">
+							<select id="daysFilter" class="border rounded p-2">
+								<option value="1">Ostatni dzień</option>
+								<option value="7" selected>Ostatni tydzień</option>
+								<option value="30">Ostatni miesiąc</option>
+							</select>
+							<button onclick="loadVisitorHistory()" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+								<i class="fas fa-sync-alt mr-2"></i>Odśwież
+							</button>
+						</div>
+					</div>
+				</div>
 
 				<div class="bg-white rounded-lg shadow p-6">
 					<div class="mb-4 flex justify-between items-center">
-						<h2 class="text-xl font-semibold">Lista aktywnych odwiedzających</h2>
-						<div class="flex items-center gap-4">
-							<a href="visitor_history.html" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
-								Historia Odwiedzin
-							</a>
-							<button
-								onclick="updateVisitorsTable()"
-								class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-							>
-								<i class="fas fa-sync-alt mr-2"></i>Odśwież
-							</button>
-							<span id="totalVisitors" class="bg-blue-500 text-white px-3 py-1 rounded">0 aktywnych</span>
+						<h2 class="text-xl font-semibold">Historia odwiedzin</h2>
+						<div class="flex items-center">
+							<span id="totalEntries" class="bg-blue-500 text-white px-3 py-1 rounded">0 wpisów</span>
 						</div>
 					</div>
 
@@ -66,14 +72,31 @@
 							<thead>
 								<tr class="bg-gray-100">
 									<th class="px-4 py-2 text-left">ID</th>
+									<th class="px-4 py-2 text-left">Visitor ID</th>
 									<th class="px-4 py-2 text-left">Strona</th>
-									<th class="px-4 py-2 text-left">Ostatnia aktywność</th>
+									<th class="px-4 py-2 text-left">IP</th>
+									<th class="px-4 py-2 text-left">Data odwiedzin</th>
 								</tr>
 							</thead>
-							<tbody id="visitorsTableBody">
+							<tbody id="historyTableBody">
 								<!-- Dane będą dodawane dynamicznie -->
 							</tbody>
 						</table>
+					</div>
+
+					<!-- Pagination -->
+					<div class="mt-4 flex justify-between items-center">
+						<div>
+							<span id="paginationInfo">Wyświetlanie 0-0 z 0</span>
+						</div>
+						<div class="flex space-x-2">
+							<button id="prevPageBtn" class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50" disabled>
+								Poprzednia
+							</button>
+							<button id="nextPageBtn" class="px-3 py-1 bg-gray-200 rounded disabled:opacity-50" disabled>
+								Następna
+							</button>
+						</div>
 					</div>
 				</div>
 
@@ -111,6 +134,10 @@
 			// Globalne zmienne
 			let lastUpdateTime = null
 			let errorCount = 0
+			let currentPage = 1
+			let totalEntries = 0
+			let entriesPerPage = 20
+			let currentData = []
 
 			// Funkcja do formatowania daty
 			function formatDate(dateString) {
@@ -154,11 +181,63 @@
 				document.getElementById('tableContainer').classList.toggle('hidden', show)
 			}
 
-			// Funkcja do aktualizacji tabeli odwiedzających
-			async function updateVisitorsTable() {
+			// Funkcja do renderowania danych tablicy z paginacją
+			function renderTable() {
+				const tableBody = document.getElementById('historyTableBody')
+				tableBody.innerHTML = ''
+
+				const startIndex = (currentPage - 1) * entriesPerPage
+				const endIndex = Math.min(startIndex + entriesPerPage, currentData.length)
+
+				// Wyświetl informacje o paginacji
+				document.getElementById('paginationInfo').textContent = `Wyświetlanie ${startIndex + 1}-${endIndex} z ${
+					currentData.length
+				}`
+
+				// Aktualizuj stan przycisków paginacji
+				document.getElementById('prevPageBtn').disabled = currentPage === 1
+				document.getElementById('nextPageBtn').disabled = endIndex >= currentData.length
+
+				// Dodaj dane do tabeli
+				for (let i = startIndex; i < endIndex; i++) {
+					const entry = currentData[i]
+					const row = document.createElement('tr')
+					row.className = i % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+					row.innerHTML = `
+						<td class="border px-4 py-2">${entry.id}</td>
+						<td class="border px-4 py-2">${entry.visitor_id}</td>
+						<td class="border px-4 py-2">${entry.page}</td>
+						<td class="border px-4 py-2">${entry.ip_address}</td>
+						<td class="border px-4 py-2">${formatDate(entry.visit_time)}</td>
+					`
+					tableBody.appendChild(row)
+				}
+			}
+
+			// Obsługa paginacji
+			document.getElementById('prevPageBtn').addEventListener('click', () => {
+				if (currentPage > 1) {
+					currentPage--
+					renderTable()
+				}
+			})
+
+			document.getElementById('nextPageBtn').addEventListener('click', () => {
+				if (currentPage * entriesPerPage < currentData.length) {
+					currentPage++
+					renderTable()
+				}
+			})
+
+			// Funkcja do ładowania historii odwiedzin
+			async function loadVisitorHistory() {
 				toggleLoading(true)
+				currentPage = 1
+
 				try {
-					const response = await fetch('../visitors_api.php?action=get')
+					const daysFilter = document.getElementById('daysFilter').value
+					const response = await fetch(`../track_visit.php?action=history&days=${daysFilter}&limit=1000`)
+
 					if (!response.ok) {
 						throw new Error(`Błąd HTTP: ${response.status}`)
 					}
@@ -168,25 +247,11 @@
 						throw new Error(data.message || 'Wystąpił nieznany błąd')
 					}
 
-					const tableBody = document.getElementById('visitorsTableBody')
-					const totalVisitors = document.getElementById('totalVisitors')
+					currentData = data.history
+					totalEntries = currentData.length
+					document.getElementById('totalEntries').textContent = `${totalEntries} wpisów`
 
-					// Wyczyść tabelę
-					tableBody.innerHTML = ''
-
-					// Dodaj nowe wiersze
-					data.visitors.forEach(visitor => {
-						const row = document.createElement('tr')
-						row.innerHTML = `
-							<td class="border px-4 py-2">${visitor.id}</td>
-							<td class="border px-4 py-2">${visitor.page}</td>
-							<td class="border px-4 py-2">${formatDate(visitor.last_activity)}</td>
-						`
-						tableBody.appendChild(row)
-					})
-
-					// Aktualizuj licznik
-					totalVisitors.textContent = `${data.visitors.length} aktywnych`
+					renderTable()
 
 					// Aktualizuj status i czas
 					updateConnectionStatus('Połączono')
@@ -203,14 +268,11 @@
 
 			// Inicjalizacja przy załadowaniu strony
 			document.addEventListener('DOMContentLoaded', function () {
-				// Aktualizuj tabelę co 10 sekund
-				updateVisitorsTable()
-				const updateInterval = setInterval(updateVisitorsTable, 10000)
+				// Załaduj dane przy starcie
+				loadVisitorHistory()
 
-				// Czyszczenie interwału przy opuszczeniu strony
-				window.addEventListener('beforeunload', () => {
-					clearInterval(updateInterval)
-				})
+				// Dodaj listener do zmiany filtra dni
+				document.getElementById('daysFilter').addEventListener('change', loadVisitorHistory)
 			})
 		</script>
 	</body>

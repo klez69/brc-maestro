@@ -106,3 +106,43 @@
 [18-Apr-2025 11:59:40 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
 [18-Apr-2025 11:59:49 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
 [18-Apr-2025 11:59:51 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:01:08 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:01:22 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:01:22 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:01:52 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:13:55 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:13:55 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:28:30 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:29:07 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:29:13 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:29:35 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:29:35 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:30:14 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:31:34 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:32:15 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:32:26 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:38:54 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:39:02 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:39:02 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:39:30 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:39:39 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:40:53 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:40:59 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:40:59 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:41:51 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:43:37 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:45:29 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:47:01 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:48:38 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:48:40 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:49:33 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:52:27 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:52:42 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:53:29 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:53:53 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[18-Apr-2025 12:54:14 Europe/Warsaw] Visitor tracking error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'page_url' cannot be null
+[19-Apr-2025 09:01:59 Europe/Warsaw] Missing required field: page_url
+[19-Apr-2025 09:25:50 Europe/Warsaw] Missing required field: page_url
+[20-Apr-2025 05:44:12 Europe/Warsaw] Missing required field: page_url
+[21-Apr-2025 10:37:32 Europe/Warsaw] Missing required field: page_url
+[22-Apr-2025 14:46:48 Europe/Warsaw] Missing required field: page_url

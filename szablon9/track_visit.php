@@ -23,20 +23,22 @@ function logError($message, $context = []) {
     error_log($logMessage, 3, __DIR__ . '/logs/visitor_tracking.log');
 }
 
-// Function to check and create table
-function ensureTableExists($pdo) {
+// Function to check and create tables
+function ensureTablesExist($pdo) {
     try {
         // Create logs directory if it doesn't exist
         if (!file_exists(__DIR__ . '/logs')) {
             mkdir(__DIR__ . '/logs', 0755, true);
         }
 
-        // Check if table exists
+        // Check if visitors table exists
+        $visitorsTableExists = false;
         $sql = "SHOW TABLES LIKE 'visitors'";
         $result = $pdo->query($sql);
+        $visitorsTableExists = $result->rowCount() > 0;
         
-        if ($result->rowCount() === 0) {
-            // Create table if it doesn't exist
+        if (!$visitorsTableExists) {
+            // Create visitors table if it doesn't exist
             $sql = "CREATE TABLE IF NOT EXISTS visitors (
                 id VARCHAR(50) PRIMARY KEY,
                 page TEXT NOT NULL,
@@ -52,17 +54,44 @@ function ensureTableExists($pdo) {
             
             $pdo->exec($sql);
             logError("Created visitors table successfully");
-            return true;
         }
+        
+        // Check if visitor_history table exists
+        $historyTableExists = false;
+        $sql = "SHOW TABLES LIKE 'visitor_history'";
+        $result = $pdo->query($sql);
+        $historyTableExists = $result->rowCount() > 0;
+        
+        if (!$historyTableExists) {
+            // Create visitor_history table if it doesn't exist
+            $sql = "CREATE TABLE IF NOT EXISTS visitor_history (
+                id INT NOT NULL AUTO_INCREMENT,
+                visitor_id VARCHAR(50) NOT NULL,
+                page VARCHAR(255) NOT NULL,
+                referrer TEXT,
+                user_agent VARCHAR(255),
+                screen_resolution VARCHAR(20),
+                language VARCHAR(10),
+                ip_address VARCHAR(45),
+                visit_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                INDEX idx_visitor_id (visitor_id),
+                INDEX idx_visit_time (visit_time)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+            
+            $pdo->exec($sql);
+            logError("Created visitor_history table successfully");
+        }
+        
         return true;
     } catch (PDOException $e) {
-        logError("Database error ensuring table exists: " . $e->getMessage(), [
+        logError("Database error ensuring tables exist: " . $e->getMessage(), [
             'error_code' => $e->getCode(),
             'sql_state' => $e->errorInfo[0] ?? null
         ]);
         return false;
     } catch (Exception $e) {
-        logError("Error ensuring table exists: " . $e->getMessage());
+        logError("Error ensuring tables exist: " . $e->getMessage());
         return false;
     }
 }
@@ -92,9 +121,9 @@ function cleanOldVisitors($pdo) {
 // Function to get active visitors
 function getVisitors($pdo) {
     try {
-        // First check if table exists
-        if (!ensureTableExists($pdo)) {
-            throw new Exception("Visitors table does not exist");
+        // First check if tables exist
+        if (!ensureTablesExist($pdo)) {
+            throw new Exception("Visitors tables do not exist");
         }
         
         // Clean old entries
@@ -115,23 +144,81 @@ function getVisitors($pdo) {
     }
 }
 
-// Function to update visitor status
+// Function to get visitor history
+function getVisitorHistory($pdo, $days = 7, $limit = 100) {
+    try {
+        // Check if tables exist
+        if (!ensureTablesExist($pdo)) {
+            throw new Exception("Visitor tables do not exist");
+        }
+        
+        // Get visitor history for the specified time period
+        $sql = "SELECT * FROM visitor_history 
+                WHERE visit_time >= DATE_SUB(NOW(), INTERVAL :days DAY) 
+                ORDER BY visit_time DESC 
+                LIMIT :limit";
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':days', $days, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return [
+            'status' => 'success',
+            'history' => $stmt->fetchAll(PDO::FETCH_ASSOC)
+        ];
+    } catch (Exception $e) {
+        logError("Failed to get visitor history: " . $e->getMessage());
+        throw $e;
+    }
+}
+
+// Function to update visitor status and record history
 function updateVisitor($pdo, $page) {
     try {
-        // Pobierz dane JSON z żądania
+        // Check if tables exist
+        if (!ensureTablesExist($pdo)) {
+            throw new Exception("Visitor tables do not exist");
+        }
+        
+        // Parse JSON input
         $jsonData = file_get_contents('php://input');
         $data = json_decode($jsonData, true);
         
         if (!$data) {
-            throw new Exception('Nieprawidłowe dane JSON');
+            throw new Exception('Invalid JSON data');
         }
 
-        // Pobierz IP użytkownika
+        // Get visitor IP
         $ip_address = $_SERVER['REMOTE_ADDR'];
         
-        // Przygotuj zapytanie SQL
-        $sql = "INSERT INTO visitors (page, referrer, user_agent, screen_resolution, language, ip_address, last_activity)
-                VALUES (:page, :referrer, :user_agent, :screen_resolution, :language, :ip_address, NOW())
+        // Generate unique visitor ID if not exists
+        if (!isset($_COOKIE['visitor_id'])) {
+            $visitor_id = uniqid('v_', true);
+            setcookie('visitor_id', $visitor_id, time() + (86400 * 30), '/'); // Cookie valid for 30 days
+        } else {
+            $visitor_id = $_COOKIE['visitor_id'];
+        }
+        
+        // Prepare visitor data
+        $visitorData = [
+            ':id' => $visitor_id,
+            ':page' => $data['page_url'] ?? $page,
+            ':referrer' => $data['referrer'] ?? null,
+            ':user_agent' => $data['user_agent'] ?? null,
+            ':screen_resolution' => $data['screen_resolution'] ?? null,
+            ':language' => $data['language'] ?? null,
+            ':ip_address' => $ip_address
+        ];
+        
+        // Begin transaction
+        $pdo->beginTransaction();
+        
+        // Update active visitors table
+        $sql = "INSERT INTO visitors 
+                (id, page, referrer, user_agent, screen_resolution, language, ip_address, last_activity)
+                VALUES 
+                (:id, :page, :referrer, :user_agent, :screen_resolution, :language, :ip_address, NOW())
                 ON DUPLICATE KEY UPDATE 
                     page = VALUES(page),
                     referrer = VALUES(referrer),
@@ -142,26 +229,34 @@ function updateVisitor($pdo, $page) {
                     last_activity = NOW()";
         
         $stmt = $pdo->prepare($sql);
+        $stmt->execute($visitorData);
         
-        // Wykonaj zapytanie z parametrami
-        $result = $stmt->execute([
-            ':page' => $data['page_url'] ?? $page,
-            ':referrer' => $data['referrer'] ?? null,
-            ':user_agent' => $data['user_agent'] ?? null,
-            ':screen_resolution' => $data['screen_resolution'] ?? null,
-            ':language' => $data['language'] ?? null,
-            ':ip_address' => $ip_address
-        ]);
+        // Add to visitor history
+        $sql = "INSERT INTO visitor_history 
+                (visitor_id, page, referrer, user_agent, screen_resolution, language, ip_address)
+                VALUES 
+                (:id, :page, :referrer, :user_agent, :screen_resolution, :language, :ip_address)";
         
-        if ($result) {
-            echo json_encode(['success' => true]);
-        } else {
-            throw new Exception('Błąd podczas aktualizacji danych');
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($visitorData);
+        
+        // Commit transaction
+        $pdo->commit();
+        
+        return [
+            'status' => 'success',
+            'visitor_id' => $visitor_id
+        ];
+    } catch (Exception $e) {
+        // Rollback transaction on error
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
         }
         
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(['error' => $e->getMessage()]);
+        logError("Error updating visitor: " . $e->getMessage(), [
+            'page' => $page ?? 'unknown'
+        ]);
+        throw $e;
     }
 }
 
@@ -182,14 +277,20 @@ try {
             echo json_encode(getVisitors($pdo));
             break;
             
+        case 'history':
+            $days = isset($_GET['days']) ? (int)$_GET['days'] : 7;
+            $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 100;
+            echo json_encode(getVisitorHistory($pdo, $days, $limit));
+            break;
+            
         case 'update':
             $data = json_decode(file_get_contents('php://input'), true);
             $page = $data['page'] ?? '/';
-            updateVisitor($pdo, $page);
+            echo json_encode(updateVisitor($pdo, $page));
             break;
             
         default:
-            throw new Exception('Invalid action specified. Expected "get" or "update", got: ' . $action);
+            throw new Exception('Invalid action specified. Expected "get", "history" or "update", got: ' . $action);
     }
 } catch (PDOException $e) {
     logError("Database error: " . $e->getMessage());
