@@ -30,6 +30,26 @@ function ensureTablesExist($pdo) {
         if (!file_exists(__DIR__ . '/logs')) {
             mkdir(__DIR__ . '/logs', 0755, true);
         }
+        
+        // Sprawdź czy połączenie z bazą danych istnieje
+        if (!isset($pdo) || $pdo === null) {
+            // Spróbuj ponownie nawiązać połączenie z bazą danych
+            try {
+                $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+                $options = [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+                ];
+                
+                $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+                logError("Utworzono nowe połączenie z bazą danych");
+            } catch (PDOException $e) {
+                logError("Błąd podczas próby ponownego nawiązania połączenia z bazą: " . $e->getMessage());
+                throw $e;
+            }
+        }
 
         // Check if visitors table exists
         $visitorsTableExists = false;

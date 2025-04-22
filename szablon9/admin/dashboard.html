@@ -1875,16 +1875,35 @@
 					}
 
 					// Pobieranie historii odwiedzin (ostatnie 24h)
-					const historyResponse = await fetch('../track_visit.php?action=history&days=1&limit=1000')
-					if (!historyResponse.ok) {
-						throw new Error('Błąd ładowania historii odwiedzających')
-					}
-					const historyData = await historyResponse.json()
-
-					if (historyData.status === 'success') {
-						const historyCount = historyData.history.length
-						document.getElementById('visitor-history-count').textContent = historyCount
-						document.getElementById('today-visits-count').textContent = historyCount
+					try {
+						const historyResponse = await fetch('../track_visit.php?action=history&days=1&limit=1000')
+						if (!historyResponse.ok) {
+							console.warn('Próba pierwszej ścieżki nie powiodła się, próbuję alternatywnej ścieżki...')
+							// Spróbujmy alternatywnej ścieżki
+							const altHistoryResponse = await fetch('./track_visit.php?action=history&days=1&limit=1000')
+							if (altHistoryResponse.ok) {
+								const historyData = await altHistoryResponse.json()
+								if (historyData.status === 'success') {
+									const historyCount = historyData.history ? historyData.history.length : 0
+									document.getElementById('visitor-history-count').textContent = historyCount
+									document.getElementById('today-visits-count').textContent = historyCount
+								}
+							} else {
+								throw new Error('Nie udało się pobrać historii odwiedzających')
+							}
+						} else {
+							const historyData = await historyResponse.json()
+							if (historyData.status === 'success') {
+								const historyCount = historyData.history ? historyData.history.length : 0
+								document.getElementById('visitor-history-count').textContent = historyCount
+								document.getElementById('today-visits-count').textContent = historyCount
+							}
+						}
+					} catch (historyError) {
+						console.error('Błąd podczas ładowania historii odwiedzających:', historyError)
+						// W przypadku błędu ustawiamy 0
+						document.getElementById('visitor-history-count').textContent = '0'
+						document.getElementById('today-visits-count').textContent = '0'
 					}
 				} catch (error) {
 					console.error('Błąd podczas ładowania statystyk odwiedzających:', error)

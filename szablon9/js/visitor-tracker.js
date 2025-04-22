@@ -1,5 +1,12 @@
 class VisitorTracker {
 	constructor() {
+		// Get base URL dynamically
+		const scriptPath = document.currentScript ? document.currentScript.src : ''
+		const baseUrl = scriptPath.substring(0, scriptPath.lastIndexOf('/js/'))
+		this.apiEndpoint = `${baseUrl}/track_visit.php`
+
+		console.log('VisitorTracker initialized with endpoint:', this.apiEndpoint)
+
 		// Check if tracking is allowed
 		if (this.isTrackingAllowed()) {
 			this.trackVisit()
@@ -78,7 +85,9 @@ class VisitorTracker {
 				visit_timestamp: new Date().toISOString(),
 			}
 
-			const response = await fetch('/api/track_visit.php', {
+			console.log('Attempting to track visit using endpoint:', this.apiEndpoint)
+
+			const response = await fetch(this.apiEndpoint, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
