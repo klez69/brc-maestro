@@ -470,9 +470,6 @@
 							Profesjonalne przedłużanie i zagęszczanie włosów różnymi metodami. Dobór odpowiedniej techniki do potrzeb
 							klienta.
 						</p>
-						<a href="#kontakt" class="inline-block font-medium text-brown">
-							Sprawdź cennik <i class="fas fa-arrow-right ml-2"></i>
-						</a>
 					</div>
 
 					<!-- Usługa 5 -->
@@ -508,9 +505,6 @@
 							Przyjazne podejście do najmłodszych klientów. Cierpliwość i profesjonalizm w tworzeniu fryzur dla dzieci w
 							każdym wieku.
 						</p>
-						<a href="#kontakt" class="inline-block font-medium text-brown">
-							Sprawdź cennik <i class="fas fa-arrow-right ml-2"></i>
-						</a>
 					</div>
 				</div>
 			</div>
@@ -1345,30 +1339,6 @@
 						</div>
 					</div>
 				</div>
-
-				<!-- Cookie Consent Banner -->
-				<div
-					id="cookie-consent"
-					class="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-4 z-50"
-					style="display: none"
-				>
-					<div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
-						<div class="mb-4 md:mb-0">
-							<p class="text-sm text-gray-700">
-								Ta strona używa plików cookie do poprawy funkcjonalności, w tym map Google i analityki. Możesz
-								dostosować swoje preferencje w każdej chwili.
-							</p>
-						</div>
-						<div class="flex gap-2">
-							<button id="accept-cookies" class="px-4 py-2 bg-brown text-white rounded hover:bg-opacity-90">
-								Akceptuj wszystkie
-							</button>
-							<button id="reject-cookies" class="px-4 py-2 border border-brown text-brown rounded hover:bg-gray-100">
-								Tylko niezbędne
-							</button>
-						</div>
-					</div>
-				</div>
 			</div>
 		</section>
 
@@ -1447,173 +1417,6 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 		<script src="gallery.js"></script>
 		<script src="scripts.js"></script>
-		<!-- Podstawowy skrypt filtrowania galerii bezpośrednio w HTML -->
-		<script>
-			document.addEventListener('DOMContentLoaded', function () {
-				// Pobierz wszystkie przyciski filtrów i elementy portfolio
-				const filterButtons = document.querySelectorAll('.portfolio-filter-btn')
-				const portfolioItems = document.querySelectorAll('.portfolio-item')
-
-				// Konfiguracja paginacji
-				const itemsPerPage = 8
-				let currentPage = 1
-				let currentFilter = 'all'
-				const totalItems = portfolioItems.length
-				let filteredItems = [...portfolioItems]
-
-				// Przyciski paginacji
-				const prevPageBtn = document.getElementById('prev-page')
-				const nextPageBtn = document.getElementById('next-page')
-				const paginationNumbers = document.querySelector('.pagination-numbers')
-
-				// Funkcja inicjalizująca paginację
-				function initPagination() {
-					updateFilteredItems()
-					updatePaginationControls()
-					showItemsForCurrentPage()
-				}
-
-				// Funkcja aktualizująca filteredItems na podstawie bieżącego filtra
-				function updateFilteredItems() {
-					if (currentFilter === 'all') {
-						filteredItems = [...portfolioItems]
-					} else if (currentFilter === 'special') {
-						filteredItems = [...portfolioItems].filter(
-							item =>
-								item.classList.contains('special') ||
-								item.classList.contains('okolicznosciowe') ||
-								item.getAttribute('data-category') === 'special'
-						)
-					} else {
-						filteredItems = [...portfolioItems].filter(item => item.classList.contains(currentFilter))
-					}
-				}
-
-				// Funkcja wyświetlająca elementy dla bieżącej strony
-				function showItemsForCurrentPage() {
-					const startIndex = (currentPage - 1) * itemsPerPage
-					const endIndex = startIndex + itemsPerPage
-
-					// Najpierw ukryj wszystkie elementy
-					portfolioItems.forEach(item => {
-						item.style.display = 'none'
-					})
-
-					// Pokaż tylko elementy dla bieżącej strony
-					filteredItems.forEach((item, index) => {
-						if (index >= startIndex && index < endIndex) {
-							item.style.display = 'flex'
-						}
-					})
-
-					// Ważne - odświeżenie układu strony po zmianie widocznych elementów
-					setTimeout(() => {
-						window.dispatchEvent(new Event('resize'))
-					}, 100)
-				}
-
-				// Funkcja aktualizująca kontrolki paginacji
-				function updatePaginationControls() {
-					const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
-
-					// Aktualizuj przyciski prev/next
-					prevPageBtn.disabled = currentPage <= 1
-					nextPageBtn.disabled = currentPage >= totalPages
-
-					// Style dla przycisków wyłączonych
-					if (prevPageBtn.disabled) {
-						prevPageBtn.classList.add('opacity-50', 'cursor-not-allowed')
-					} else {
-						prevPageBtn.classList.remove('opacity-50', 'cursor-not-allowed')
-					}
-
-					if (nextPageBtn.disabled) {
-						nextPageBtn.classList.add('opacity-50', 'cursor-not-allowed')
-					} else {
-						nextPageBtn.classList.remove('opacity-50', 'cursor-not-allowed')
-					}
-
-					// Generuj numery stron
-					paginationNumbers.innerHTML = ''
-
-					for (let i = 1; i <= totalPages; i++) {
-						const pageBtn = document.createElement('button')
-						pageBtn.innerText = i
-						pageBtn.classList.add(
-							'w-8',
-							'h-8',
-							'rounded-full',
-							'flex',
-							'items-center',
-							'justify-center',
-							'transition-all'
-						)
-
-						if (i === currentPage) {
-							pageBtn.classList.add('bg-brown', 'text-white')
-						} else {
-							pageBtn.classList.add('border', 'border-brown', 'text-brown', 'hover:bg-brown', 'hover:text-white')
-						}
-
-						pageBtn.addEventListener('click', () => {
-							currentPage = i
-							showItemsForCurrentPage()
-							updatePaginationControls()
-						})
-
-						paginationNumbers.appendChild(pageBtn)
-					}
-				}
-
-				// Event listenery dla przycisków paginacji
-				prevPageBtn.addEventListener('click', () => {
-					if (currentPage > 1) {
-						currentPage--
-						showItemsForCurrentPage()
-						updatePaginationControls()
-					}
-				})
-
-				nextPageBtn.addEventListener('click', () => {
-					const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
-					if (currentPage < totalPages) {
-						currentPage++
-						showItemsForCurrentPage()
-						updatePaginationControls()
-					}
-				})
-
-				// Dodaj event listener do każdego przycisku filtra
-				filterButtons.forEach(function (button) {
-					button.addEventListener('click', function () {
-						// Usuń aktywną klasę ze wszystkich przycisków
-						filterButtons.forEach(function (btn) {
-							btn.classList.remove('active')
-							btn.style.backgroundColor = ''
-							btn.style.color = 'var(--brown)'
-						})
-
-						// Dodaj aktywną klasę do klikniętego przycisku
-						this.classList.add('active')
-						this.style.backgroundColor = 'var(--brown)'
-						this.style.color = 'white'
-
-						// Pobierz wartość filtru
-						currentFilter = this.getAttribute('data-filter')
-
-						// Zresetuj paginację i zaktualizuj widok
-						currentPage = 1
-						initPagination()
-					})
-				})
-
-				// Inicjalizacja po załadowaniu strony
-				initPagination()
-
-				// Ustaw filtr "Wszystkie" jako aktywny na początku
-				document.querySelector('.portfolio-filter-btn[data-filter="all"]').click()
-			})
-		</script>
 		<script>
 			// Funkcja do aktualizacji statusu odwiedzającego
 			function updateVisitorStatus() {
