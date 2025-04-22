@@ -1809,15 +1809,26 @@
 			// Przycisk odświeżania
 			document.getElementById('visitors-retry')?.addEventListener('click', fetchActiveVisitors)
 
-			// Pobierz aktywnych odwiedzających przy załadowaniu strony
+			// Inicjalizacja przy załadowaniu strony
 			document.addEventListener('DOMContentLoaded', function () {
 				// Sprawdź autoryzację na początku
 				if (!checkAuth()) return
 
+				// Załaduj dane galerii
+				loadGalleryData()
+
+				// Aktualizuj statystyki
+				updateStatistics()
+
+				// Pobierz aktywnych odwiedzających
 				fetchActiveVisitors()
 
-				// Odświeżaj co 30 sekund
-				setInterval(fetchActiveVisitors, 30000)
+				// Załaduj statystyki odwiedzających
+				loadVisitorStats()
+
+				// Ustaw interwały odświeżania
+				setInterval(fetchActiveVisitors, 30000) // Co 30 sekund
+				setInterval(loadVisitorStats, 60000) // Co 60 sekund
 			})
 
 			// Funkcja do ładowania danych o odwiedzających
@@ -1879,17 +1890,6 @@
 					console.error('Błąd podczas ładowania statystyk odwiedzających:', error)
 				}
 			}
-
-			// Inicjalizacja przy załadowaniu strony
-			document.addEventListener('DOMContentLoaded', function () {
-				// ... existing code ...
-
-				// Załaduj statystyki odwiedzających
-				loadVisitorStats()
-
-				// Odświeżaj statystyki co 1 minutę
-				setInterval(loadVisitorStats, 60000)
-			})
 		</script>
 	</body>
 </html>
