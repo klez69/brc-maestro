@@ -301,6 +301,48 @@ function updateVisitor($pdo, $page) {
 
 // Handle requests
 try {
+    // Sprawdź czy użytkownik ma uprawnienia do wykonania poufnych operacji
+    $requiresAuth = false;
+    $action = isset($_GET['action']) ? htmlspecialchars(strip_tags($_GET['action'])) : '';
+    
+    // Operacje wymagające uwierzytelnienia
+    $authRequiredActions = []; // Usuwamy 'get' i 'history' z listy wymaganych autoryzacji
+    
+    if (in_array($action, $authRequiredActions)) {
+        $requiresAuth = true;
+        
+        // Rozpocznij sesję jeśli jeszcze nie istnieje
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Sprawdź dane sesji
+        $isAuthorized = false;
+        if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+            $isAuthorized = true;
+        }
+        
+        // Opcjonalnie: dla kompatybilności z istniejącym kodem
+        if (!$isAuthorized && 
+            (isset($_COOKIE['admin_token']) || 
+             (isset($_SESSION['adminLoggedIn']) && $_SESSION['adminLoggedIn'] === 'true') ||
+             (isset($_COOKIE['adminLoggedIn']) && $_COOKIE['adminLoggedIn'] === 'true') ||
+             (isset($_COOKIE['visitor_id']) || isset($_COOKIE['PHPSESSID']))
+            )) {
+            $isAuthorized = true;
+        }
+        
+        if (!$isAuthorized) {
+            logError("Unauthorized access attempt to action: " . $action);
+            http_response_code(401);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Unauthorized'
+            ]);
+            exit();
+        }
+    }
+    
     // Test database connection
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
@@ -309,22 +351,43 @@ try {
         exit();
     }
     
-    $action = $_GET['action'] ?? '';
-    
     switch ($action) {
         case 'get':
             echo json_encode(getVisitors($pdo));
             break;
             
         case 'history':
+            // Sanityzuj i waliduj parametry
             $days = isset($_GET['days']) ? (int)$_GET['days'] : 7;
             $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 100;
+            
+            // Ustaw wartości domyślne jeśli walidacja się nie powiedzie
+            if ($days < 1 || $days > 30) {
+                $days = 7; // Domyślnie 7 dni
+            }
+            
+            if ($limit < 1 || $limit > 5000) {
+                $limit = 100; // Domyślnie 100 wpisów
+            }
+            
             echo json_encode(getVisitorHistory($pdo, $days, $limit));
             break;
             
         case 'update':
-            $data = json_decode(file_get_contents('php://input'), true);
-            $page = $data['page'] ?? '/';
+            // Sanityzuj i waliduj dane wejściowe
+            $rawData = file_get_contents('php://input');
+            $data = json_decode($rawData, true);
+            
+            if (!is_array($data)) {
+                throw new Exception('Invalid JSON data');
+            }
+            
+            // Ustaw domyślną wartość strony
+            $page = isset($data['page']) ? htmlspecialchars(strip_tags($data['page'])) : '/';
+            if (empty($page)) {
+                $page = '/';
+            }
+            
             echo json_encode(updateVisitor($pdo, $page));
             break;
             

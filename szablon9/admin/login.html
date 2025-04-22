@@ -194,6 +194,23 @@
 			.border-brown {
 				border-color: var(--brown);
 			}
+
+			.animate-wiggle {
+				animation: wiggle 0.5s ease-in-out;
+			}
+
+			@keyframes wiggle {
+				0%,
+				100% {
+					transform: translateX(0);
+				}
+				25% {
+					transform: translateX(-10px);
+				}
+				75% {
+					transform: translateX(10px);
+				}
+			}
 		</style>
 	</head>
 	<body class="bg-cream">
@@ -204,7 +221,7 @@
 					<p class="text-gray-600">Salon Fryzjerski Migdał</p>
 				</div>
 
-				<form id="loginForm" class="space-y-6">
+				<form id="loginForm" class="space-y-6" action="../auth.php" method="post">
 					<div>
 						<label for="username" class="block text-sm font-medium text-gray-700 mb-1">Nazwa użytkownika</label>
 						<div class="relative">
@@ -262,8 +279,14 @@
 					</div>
 
 					<div id="error-message" class="text-red-600 text-center hidden">
+						<?php if(isset($_GET['error']) && $_GET['error'] === 'auth'): ?>
 						Nieprawidłowa nazwa użytkownika lub hasło.
+						<?php elseif(isset($_GET['error']) && $_GET['error'] === 'session'): ?>
+						Sesja wygasła. Zaloguj się ponownie.
+						<?php endif; ?>
 					</div>
+
+					<input type="hidden" name="token" id="csrf-token" value="" />
 				</form>
 
 				<div class="mt-6 text-center">
@@ -290,46 +313,37 @@
 					icon.classList.toggle('fa-eye-slash')
 				})
 
+				// Generuj CSRF token
+				function generateCSRFToken() {
+					return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+				}
+
+				// Ustaw token CSRF
+				const csrfToken = generateCSRFToken()
+				document.getElementById('csrf-token').value = csrfToken
+				sessionStorage.setItem('csrf_token', csrfToken)
+
 				// Obsługa formularza logowania
 				const loginForm = document.getElementById('loginForm')
 				const errorMessage = document.getElementById('error-message')
 
-				loginForm.addEventListener('submit', function (e) {
-					e.preventDefault()
+				// Pokaż komunikat o błędzie, jeśli istnieje w URL
+				if (window.location.search.includes('error=')) {
+					errorMessage.classList.remove('hidden')
 
-					const username = document.getElementById('username').value
-					const password = document.getElementById('password').value
-					const remember = document.getElementById('remember').checked
-
-					// Bardzo podstawowe uwierzytelnianie - w prawdziwej implementacji
-					// należy użyć bezpiecznej walidacji po stronie serwera
-					if (username === 'admin' && password === 'admin123') {
-						// Zapisz stan zalogowania w localStorage, jeśli "zapamiętaj mnie" jest zaznaczone
-						if (remember) {
-							localStorage.setItem('adminLoggedIn', 'true')
-						} else {
-							// W przeciwnym razie używamy sessionStorage
-							sessionStorage.setItem('adminLoggedIn', 'true')
-						}
-
-						// Przekieruj do panelu administracyjnego
-						window.location.href = 'dashboard.html'
-					} else {
-						// Pokaż komunikat o błędzie
-						errorMessage.classList.remove('hidden')
-
-						// Wstrząśnij formularzem dla lepszego feedbacku
-						loginForm.classList.add('animate-wiggle')
-						setTimeout(() => {
-							loginForm.classList.remove('animate-wiggle')
-						}, 500)
-					}
-				})
+					// Wstrząśnij formularzem dla lepszego feedbacku
+					loginForm.classList.add('animate-wiggle')
+					setTimeout(() => {
+						loginForm.classList.remove('animate-wiggle')
+					}, 500)
+				}
 
 				// Sprawdź, czy użytkownik jest już zalogowany
 				function checkLoggedIn() {
+					// Sprawdź lokalnie, ale pełna weryfikacja będzie na serwerze
 					if (localStorage.getItem('adminLoggedIn') === 'true' || sessionStorage.getItem('adminLoggedIn') === 'true') {
-						window.location.href = 'dashboard.html'
+						// Przekieruj do strony weryfikacji sesji, która sprawdzi ważność sesji
+						window.location.href = '../verify_session.php'
 					}
 				}
 

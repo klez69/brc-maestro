@@ -1095,9 +1095,38 @@
 				const isLoggedIn = isLoggedInLocal || isLoggedInSession
 
 				if (!isLoggedIn) {
-					window.location.href = 'login.html'
+					// Przekieruj do strony weryfikacji sesji, która sprawdzi czy użytkownik ma ważną sesję
+					window.location.href = '../verify_session.php'
 					return false
 				}
+
+				// Odśwież sesję co 15 minut
+				const refreshSession = async () => {
+					try {
+						const response = await fetch('../refresh_session.php', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+							},
+							credentials: 'same-origin',
+						})
+
+						if (!response.ok) {
+							// Jeśli sesja wygasła, przekieruj do strony logowania
+							console.warn('Sesja wygasła lub nieprawidłowa')
+							localStorage.removeItem('adminLoggedIn')
+							sessionStorage.removeItem('adminLoggedIn')
+							window.location.href = '../verify_session.php'
+							return false
+						}
+					} catch (error) {
+						console.error('Błąd odświeżania sesji:', error)
+					}
+				}
+
+				// Ustaw interwał do odświeżania sesji co 15 minut
+				setInterval(refreshSession, 15 * 60 * 1000)
+
 				return true
 			}
 
@@ -1119,9 +1148,7 @@
 			// Obsługa wylogowania
 			document.getElementById('logout-btn').addEventListener('click', function (e) {
 				e.preventDefault()
-				localStorage.removeItem('adminLoggedIn')
-				sessionStorage.removeItem('adminLoggedIn')
-				window.location.href = 'login.html'
+				window.location.href = '../logout.php'
 			})
 
 			// Nawigacja między sekcjami

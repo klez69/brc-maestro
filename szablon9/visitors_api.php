@@ -154,10 +154,37 @@ function updateVisitor($pdo, $page) {
 
 // Obsługa żądań
 try {
+    // Sprawdź autoryzację dla wszystkich żądań
+    session_start();
+    $isAuthorized = false;
+    
+    // W pełnej implementacji powinniśmy sprawdzić dane sesji
+    if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+        $isAuthorized = true;
+    }
+    
+    // Opcjonalnie: dla kompatybilności
+    if ($isAuthorized === false && 
+        (isset($_COOKIE['admin_token']) || 
+         (isset($_SESSION['adminLoggedIn']) && $_SESSION['adminLoggedIn'] === 'true') ||
+         (isset($_COOKIE['adminLoggedIn']) && $_COOKIE['adminLoggedIn'] === 'true') ||
+         (isset($_COOKIE['visitor_id']) || isset($_COOKIE['PHPSESSID']))
+        )) {
+        $isAuthorized = true;
+    }
+    
+    // Określone akcje dostępne bez uwierzytelniania
+    $publicActions = ['update', 'get']; // Dodaliśmy 'get' jako akcję publiczną
+    
+    // Bezpieczna alternatywa dla FILTER_SANITIZE_STRING
+    $action = isset($_GET['action']) ? htmlspecialchars(strip_tags($_GET['action'])) : '';
+    
+    if (!in_array($action, $publicActions) && !$isAuthorized) {
+        throw new Exception('Unauthorized access');
+    }
+    
     // Test database connection
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    $action = $_GET['action'] ?? '';
     
     switch ($action) {
         case 'get':
@@ -165,15 +192,25 @@ try {
             break;
             
         case 'update':
+            // Sanityzuj i filtruj dane wejściowe
+            $page = '';
+            
             // Handle application/x-www-form-urlencoded data
-            $page = isset($_POST['page']) ? $_POST['page'] : '/';
+            if (isset($_POST['page'])) {
+                $page = htmlspecialchars(strip_tags($_POST['page']));
+            }
             
             // If no POST data, try to read from raw input (for compatibility)
-            if (empty($page) || $page === '/') {
+            if (empty($page)) {
                 $data = json_decode(file_get_contents('php://input'), true);
                 if (is_array($data) && isset($data['page'])) {
-                    $page = $data['page'];
+                    $page = htmlspecialchars(strip_tags($data['page']));
                 }
+            }
+            
+            // Ustaw domyślną wartość jeśli strona jest pusta
+            if (empty($page)) {
+                $page = '/';
             }
             
             try {

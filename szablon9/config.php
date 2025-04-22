@@ -91,7 +91,7 @@ ini_set('session.gc_maxlifetime', 3600); // 1 godzina
 session_set_cookie_params([
     'lifetime' => 3600,
     'path' => '/',
-    'secure' => true,    // Tylko przez HTTPS
+    'secure' => ENVIRONMENT === 'production', // Tylko przez HTTPS w produkcji
     'httponly' => true,  // Niedostępne przez JavaScript
     'samesite' => 'Strict' // Ochrona przed CSRF
 ]);
