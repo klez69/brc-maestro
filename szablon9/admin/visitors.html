@@ -88,9 +88,25 @@
 		</div>
 
 		<script>
-			// Sprawdź autoryzację
-			checkAuth()
+			// Funkcja sprawdzająca autoryzację
+			function checkAuth() {
+				const isLoggedInLocal = localStorage.getItem('adminLoggedIn') === 'true'
+				const isLoggedInSession = sessionStorage.getItem('adminLoggedIn') === 'true'
+				const isLoggedIn = isLoggedInLocal || isLoggedInSession
 
+				if (!isLoggedIn) {
+					window.location.href = 'login.html'
+					return false
+				}
+				return true
+			}
+
+			// Wykonaj sprawdzenie autoryzacji natychmiast
+			if (!checkAuth()) {
+				throw new Error('Brak autoryzacji')
+			}
+
+			// Globalne zmienne
 			let lastUpdateTime = null
 			let errorCount = 0
 
@@ -183,15 +199,16 @@
 				}
 			}
 
-			// Aktualizuj tabelę co 10 sekund
-			const updateInterval = setInterval(updateVisitorsTable, 10000)
+			// Inicjalizacja przy załadowaniu strony
+			document.addEventListener('DOMContentLoaded', function () {
+				// Aktualizuj tabelę co 10 sekund
+				updateVisitorsTable()
+				const updateInterval = setInterval(updateVisitorsTable, 10000)
 
-			// Pierwsza aktualizacja przy załadowaniu strony
-			updateVisitorsTable()
-
-			// Czyszczenie interwału przy opuszczeniu strony
-			window.addEventListener('beforeunload', () => {
-				clearInterval(updateInterval)
+				// Czyszczenie interwału przy opuszczeniu strony
+				window.addEventListener('beforeunload', () => {
+					clearInterval(updateInterval)
+				})
 			})
 		</script>
 	</body>

@@ -35,14 +35,39 @@ function ensureTableExists($pdo) {
                 `last_activity` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (`id`),
                 INDEX `idx_last_activity` (`last_activity`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
             
             $pdo->exec($sql);
-            logError("Visitors table created successfully");
-            return true;
+            
+            // Sprawdzenie, czy tabela faktycznie została utworzona
+            $stmt = $pdo->query("SHOW TABLES LIKE 'visitors'");
+            $tableCreated = $stmt->rowCount() > 0;
+            
+            if ($tableCreated) {
+                logError("Visitors table created successfully");
+                return true;
+            } else {
+                logError("Failed to create visitors table");
+                return false;
+            }
         }
         
-        return $tableExists;
+        // Sprawdzenie, czy tabela ma poprawną strukturę
+        try {
+            $stmt = $pdo->query("SHOW COLUMNS FROM `visitors` LIKE 'page'");
+            $pageColumnExists = $stmt->rowCount() > 0;
+            
+            if (!$pageColumnExists) {
+                logError("Column 'page' does not exist in visitors table, attempting to fix structure");
+                // Próba naprawy struktury tabeli
+                $pdo->exec("ALTER TABLE `visitors` ADD COLUMN `page` VARCHAR(255) NOT NULL DEFAULT '/'");
+            }
+            
+            return true;
+        } catch (PDOException $e) {
+            logError("Error checking table structure: " . $e->getMessage());
+            return false;
+        }
     } catch (PDOException $e) {
         logError("Error checking/creating visitors table: " . $e->getMessage());
         return false;

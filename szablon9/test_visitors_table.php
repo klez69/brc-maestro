@@ -7,20 +7,27 @@ try {
     // Test database connection
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Check if visitors table exists
+    // Sprawdź czy tabela visitors istnieje
     $stmt = $pdo->query("SHOW TABLES LIKE 'visitors'");
     $tableExists = $stmt->rowCount() > 0;
     
     if (!$tableExists) {
-        // Create the table if it doesn't exist
-        $sql = file_get_contents('sql/visitors.sql');
+        // Utwórz tabelę jeśli nie istnieje
+        $sql = "CREATE TABLE IF NOT EXISTS `visitors` (
+            `id` VARCHAR(50) NOT NULL,
+            `page` VARCHAR(255) NOT NULL,
+            `last_activity` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`),
+            INDEX `idx_last_activity` (`last_activity`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+        
         $pdo->exec($sql);
         echo json_encode([
             'status' => 'success',
-            'message' => 'Visitors table created successfully'
+            'message' => 'Tabela visitors została utworzona pomyślnie'
         ]);
     } else {
-        // Test inserting a record
+        // Testowe dodanie rekordu
         $testId = 'test_' . uniqid();
         $stmt = $pdo->prepare("
             INSERT INTO visitors (id, page, last_activity) 
@@ -31,27 +38,27 @@ try {
             ':page' => '/test'
         ]);
         
-        // Test selecting records
-        $stmt = $pdo->query("SELECT * FROM visitors LIMIT 1");
+        // Odczytanie testowych danych
+        $stmt = $pdo->query("SELECT * FROM visitors WHERE id = '$testId'");
         $record = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Clean up test record
+        // Usunięcie testowego rekordu
         $pdo->exec("DELETE FROM visitors WHERE id = '$testId'");
         
         echo json_encode([
             'status' => 'success',
-            'message' => 'Visitors table exists and is working correctly',
+            'message' => 'Tabela visitors istnieje i działa poprawnie',
             'sample_record' => $record
         ]);
     }
 } catch (PDOException $e) {
     echo json_encode([
         'status' => 'error',
-        'message' => 'Database error: ' . $e->getMessage()
+        'message' => 'Błąd bazy danych: ' . $e->getMessage()
     ]);
 } catch (Exception $e) {
     echo json_encode([
         'status' => 'error',
-        'message' => 'General error: ' . $e->getMessage()
+        'message' => 'Ogólny błąd: ' . $e->getMessage()
     ]);
 } 

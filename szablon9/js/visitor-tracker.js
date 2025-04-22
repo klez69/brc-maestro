@@ -83,7 +83,13 @@ class VisitorTracker {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify(visitData),
+				body: JSON.stringify({
+					...visitData,
+					// Upewnij się, że page_url zawiera rzeczywistą ścieżkę strony
+					page_url: window.location.pathname,
+					// Jeśli referrer nie istnieje, jest to wejście bezpośrednie
+					referrer: document.referrer || 'direct',
+				}),
 				// Ensure no credentials are sent
 				credentials: 'omit',
 			})

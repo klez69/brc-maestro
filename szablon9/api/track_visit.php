@@ -58,7 +58,7 @@ try {
 
     // Clean and sanitize data
     $cleanData = [
-        'page_url' => filter_var($data['page_url'], FILTER_SANITIZE_URL),
+        'page_url' => !empty($data['page_url']) ? filter_var($data['page_url'], FILTER_SANITIZE_URL) : '/',
         'referrer' => filter_var($data['referrer'], FILTER_SANITIZE_URL),
         'user_agent' => substr(strip_tags($data['user_agent']), 0, 255),
         'screen_resolution' => preg_replace('/[^0-9x]/', '', $data['screen_resolution']),
@@ -66,6 +66,14 @@ try {
         'visit_timestamp' => date('Y-m-d H:i:s', strtotime($data['visit_timestamp'])),
         'ip_address' => $anonymizedIP
     ];
+
+    // Sprawdzenie, czy page_url nie jest puste - jeśli tak, użyj '/'
+    if (empty($cleanData['page_url']) || $cleanData['page_url'] === 'direct') {
+        $cleanData['page_url'] = '/';
+    }
+
+    // Log dla debugowania
+    error_log('Processing visit tracking: ' . json_encode($cleanData));
 
     // Prepare the SQL statement
     $stmt = $pdo->prepare("

@@ -699,6 +699,41 @@
 
 						<div class="panel">
 							<div class="panel-header">
+								<h3 class="panel-title">Aktywni odwiedzający</h3>
+								<a href="visitors.html" class="btn btn-sm">Szczegóły</a>
+							</div>
+
+							<div id="visitors-container">
+								<div id="visitors-loading" class="text-center py-6">
+									<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brown mx-auto mb-4"></div>
+									<p class="text-gray-600">Ładowanie danych...</p>
+								</div>
+								<div id="visitors-error" class="text-center py-6 hidden">
+									<i class="fas fa-exclamation-circle text-red-500 mb-2" style="font-size: 24px"></i>
+									<p id="visitors-error-message" class="text-red-500">Nie udało się załadować danych.</p>
+									<button id="visitors-retry" class="btn btn-sm mt-10">Odśwież</button>
+								</div>
+								<div id="visitors-content" class="hidden">
+									<div class="visitors-count mb-10">
+										<strong>Liczba odwiedzających:</strong> <span id="visitors-count-value">0</span>
+									</div>
+									<table class="visitors-table" style="width: 100%; border-collapse: collapse">
+										<thead>
+											<tr style="background-color: #f5f1e8; text-align: left">
+												<th style="padding: 10px; border-bottom: 1px solid #e9ecef">Strona</th>
+												<th style="padding: 10px; border-bottom: 1px solid #e9ecef">Ostatnia aktywność</th>
+											</tr>
+										</thead>
+										<tbody id="visitors-table-body">
+											<!-- Dane będą wypełniane przez JavaScript -->
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+						<div class="panel">
+							<div class="panel-header">
 								<h3 class="panel-title">Ostatnio dodane zdjęcia</h3>
 								<a href="#" class="btn btn-sm" data-section="add-images">Dodaj nowe</a>
 							</div>
@@ -804,16 +839,6 @@
 							</form>
 						</div>
 					</div>
-
-					<!-- Sekcja aktywnych odwiedzających -->
-					<div class="bg-white p-6 rounded-lg shadow-md mb-6">
-						<h2 class="text-xl font-semibold mb-4">Aktywni odwiedzający</h2>
-						<div id="activeVisitors" class="space-y-2">
-							<div class="flex items-center justify-between">
-								<p>Ładowanie danych...</p>
-							</div>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -832,6 +857,19 @@
 		</div>
 
 		<script>
+			// Funkcja sprawdzająca autoryzację
+			function checkAuth() {
+				const isLoggedInLocal = localStorage.getItem('adminLoggedIn') === 'true'
+				const isLoggedInSession = sessionStorage.getItem('adminLoggedIn') === 'true'
+				const isLoggedIn = isLoggedInLocal || isLoggedInSession
+
+				if (!isLoggedIn) {
+					window.location.href = 'login.html'
+					return false
+				}
+				return true
+			}
+
 			// Sprawdź, czy użytkownik jest zalogowany
 			window.onload = function () {
 				const isLoggedInLocal = localStorage.getItem('adminLoggedIn') === 'true'
@@ -1421,39 +1459,101 @@
 				document.getElementById('toast').classList.remove('show')
 			})
 
-			// Funkcja do pobierania i wyświetlania aktywnych odwiedzających
-			async function updateActiveVisitors() {
-				try {
-					const response = await fetch('../visitors_api.php?action=get')
-					const data = await response.json()
+			// Funkcja do pobierania aktywnych odwiedzających
+			function fetchActiveVisitors() {
+				const loadingElement = document.getElementById('visitors-loading')
+				const errorElement = document.getElementById('visitors-error')
+				const contentElement = document.getElementById('visitors-content')
+				const errorMessageElement = document.getElementById('visitors-error-message')
+				const tableBody = document.getElementById('visitors-table-body')
+				const countElement = document.getElementById('visitors-count-value')
 
-					if (data.success) {
-						const visitorsDiv = document.getElementById('activeVisitors')
-						visitorsDiv.innerHTML = ''
+				// Pokaż ładowanie, ukryj błąd i zawartość
+				loadingElement.classList.remove('hidden')
+				errorElement.classList.add('hidden')
+				contentElement.classList.add('hidden')
 
-						if (data.visitors.length === 0) {
-							visitorsDiv.innerHTML = '<p class="text-gray-500">Brak aktywnych odwiedzających</p>'
-							return
+				fetch('../visitors_api.php?action=get')
+					.then(response => {
+						if (!response.ok) {
+							throw new Error(`HTTP error! Status: ${response.status}`)
+						}
+						return response.json()
+					})
+					.then(data => {
+						if (data.status === 'error') {
+							throw new Error(data.message || 'Nieznany błąd')
 						}
 
+						// Ukryj ładowanie, pokaż zawartość
+						loadingElement.classList.add('hidden')
+						contentElement.classList.remove('hidden')
+
+						// Aktualizuj licznik
+						countElement.textContent = data.visitors.length
+
+						// Wyczyść tabelę
+						tableBody.innerHTML = ''
+
+						// Wypełnij tabelę danymi
 						data.visitors.forEach(visitor => {
-							const visitorElement = document.createElement('div')
-							visitorElement.className = 'flex items-center justify-between bg-gray-50 p-3 rounded'
-							visitorElement.innerHTML = `
-								<span class="font-medium">${visitor.page}</span>
-								<span class="text-gray-600">Liczba: ${visitor.count}</span>
+							const row = document.createElement('tr')
+							const lastActivity = new Date(visitor.last_activity)
+
+							row.innerHTML = `
+								<td style="padding: 10px; border-bottom: 1px solid #e9ecef;">${visitor.page}</td>
+								<td style="padding: 10px; border-bottom: 1px solid #e9ecef;">${lastActivity.toLocaleString('pl-PL')}</td>
 							`
-							visitorsDiv.appendChild(visitorElement)
+
+							tableBody.appendChild(row)
 						})
-					}
-				} catch (error) {
-					console.error('Błąd podczas pobierania danych o odwiedzających:', error)
-				}
+
+						if (data.visitors.length === 0) {
+							const emptyRow = document.createElement('tr')
+							emptyRow.innerHTML = `
+								<td colspan="2" style="padding: 20px; text-align: center; color: #8b6d5c;">
+									Brak aktywnych odwiedzających
+								</td>
+							`
+							tableBody.appendChild(emptyRow)
+						}
+
+						// Dodaj informację o ostatnim odświeżeniu
+						const currentTime = new Date()
+						const refreshInfo = document.createElement('div')
+						refreshInfo.className = 'mt-10 text-right text-sm text-gray-500'
+						refreshInfo.innerHTML = `Ostatnie odświeżenie: ${currentTime.toLocaleString('pl-PL')}`
+
+						// Usuń poprzednią informację o odświeżeniu, jeśli istnieje
+						const existingRefreshInfo = contentElement.querySelector('.mt-10.text-right')
+						if (existingRefreshInfo) {
+							existingRefreshInfo.remove()
+						}
+
+						contentElement.appendChild(refreshInfo)
+					})
+					.catch(error => {
+						// Ukryj ładowanie, pokaż błąd
+						loadingElement.classList.add('hidden')
+						errorElement.classList.remove('hidden')
+						errorMessageElement.textContent = `Błąd: ${error.message}`
+						console.error('Error fetching visitors:', error)
+					})
 			}
 
-			// Aktualizuj dane co 30 sekund
-			updateActiveVisitors()
-			setInterval(updateActiveVisitors, 30000)
+			// Przycisk odświeżania
+			document.getElementById('visitors-retry')?.addEventListener('click', fetchActiveVisitors)
+
+			// Pobierz aktywnych odwiedzających przy załadowaniu strony
+			document.addEventListener('DOMContentLoaded', function () {
+				// Sprawdź autoryzację na początku
+				if (!checkAuth()) return
+
+				fetchActiveVisitors()
+
+				// Odświeżaj co 30 sekund
+				setInterval(fetchActiveVisitors, 30000)
+			})
 		</script>
 	</body>
 </html>
