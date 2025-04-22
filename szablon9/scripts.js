@@ -244,31 +244,30 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 
 		currentSlide = slideIndex
-		const translateValue = (-currentSlide * slideWidth) / (window.innerWidth >= 1024 ? 3 : 1)
 
+		// Obsługa ciągłego przewijania
+		// Jeśli przechodzimy poza zakres, oblicz nowy indeks w sposób "kolisty"
+		if (currentSlide >= allSlides.length) {
+			// Zamiast przeskakiwać na początek, kontynuuj od pierwszego elementu
+			currentSlide = 1
+		} else if (currentSlide <= 0) {
+			// Zamiast przeskakiwać na koniec, kontynuuj od ostatniego prawdziwego elementu
+			currentSlide = allSlides.length - 2
+		}
+
+		const translateValue = (-currentSlide * slideWidth) / (window.innerWidth >= 1024 ? 3 : 1)
 		testimonialsContainer.style.transform = `translateX(${translateValue}%)`
 
-		// Sprawdź czy jesteśmy na klonie i przeskocz do oryginalnego slajdu po zakończeniu animacji
+		// Usuń obsługę przeskakiwania z powrotem do początku
 		setTimeout(() => {
 			isTransitioning = false
 			testimonialsContainer.classList.remove('testimonial-transition')
-
-			// Jeśli jesteśmy na ostatnim klonie, przeskocz do pierwszego prawdziwego slajdu
-			if (currentSlide >= allSlides.length - 1) {
-				currentSlide = 1
-				testimonialsContainer.style.transform = `translateX(-${slideWidth / (window.innerWidth >= 1024 ? 3 : 1)}%)`
-			}
-			// Jeśli jesteśmy na pierwszym klonie, przeskocz do ostatniego prawdziwego slajdu
-			else if (currentSlide <= 0) {
-				currentSlide = allSlides.length - 2
-				const newTranslateValue = (-currentSlide * slideWidth) / (window.innerWidth >= 1024 ? 3 : 1)
-				testimonialsContainer.style.transform = `translateX(${newTranslateValue}%)`
-			}
 		}, 500)
 	}
 
 	// Auto-play dla testimoniali
 	let testimonialInterval = setInterval(() => {
+		// Ciągłe przechodzenie do następnego slajdu
 		goToSlide(currentSlide + 1)
 	}, 5000)
 
@@ -276,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		prevButton.addEventListener('click', () => {
 			clearInterval(testimonialInterval)
 			goToSlide(currentSlide - 1)
-			// Restart auto-play
+			// Restart auto-play z nowym indeksem
 			testimonialInterval = setInterval(() => {
 				goToSlide(currentSlide + 1)
 			}, 5000)
@@ -285,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		nextButton.addEventListener('click', () => {
 			clearInterval(testimonialInterval)
 			goToSlide(currentSlide + 1)
-			// Restart auto-play
+			// Restart auto-play z nowym indeksem
 			testimonialInterval = setInterval(() => {
 				goToSlide(currentSlide + 1)
 			}, 5000)

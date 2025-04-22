@@ -39,7 +39,7 @@ function ensureTableExists($pdo) {
             // Create table if it doesn't exist
             $sql = "CREATE TABLE IF NOT EXISTS visitors (
                 id VARCHAR(50) PRIMARY KEY,
-                page_url TEXT NOT NULL,
+                page TEXT NOT NULL,
                 referrer TEXT,
                 user_agent VARCHAR(255),
                 screen_resolution VARCHAR(20),
@@ -130,10 +130,10 @@ function updateVisitor($pdo, $page) {
         $ip_address = $_SERVER['REMOTE_ADDR'];
         
         // Przygotuj zapytanie SQL
-        $sql = "INSERT INTO visitors (page_url, referrer, user_agent, screen_resolution, language, ip_address, last_activity) 
-                VALUES (:page_url, :referrer, :user_agent, :screen_resolution, :language, :ip_address, NOW())
+        $sql = "INSERT INTO visitors (page, referrer, user_agent, screen_resolution, language, ip_address, last_activity)
+                VALUES (:page, :referrer, :user_agent, :screen_resolution, :language, :ip_address, NOW())
                 ON DUPLICATE KEY UPDATE 
-                    page_url = VALUES(page_url),
+                    page = VALUES(page),
                     referrer = VALUES(referrer),
                     user_agent = VALUES(user_agent),
                     screen_resolution = VALUES(screen_resolution),
@@ -145,11 +145,11 @@ function updateVisitor($pdo, $page) {
         
         // Wykonaj zapytanie z parametrami
         $result = $stmt->execute([
-            ':page_url' => $data['page_url'],
-            ':referrer' => $data['referrer'],
-            ':user_agent' => $data['user_agent'],
-            ':screen_resolution' => $data['screen_resolution'],
-            ':language' => $data['language'],
+            ':page' => $data['page_url'] ?? $page,
+            ':referrer' => $data['referrer'] ?? null,
+            ':user_agent' => $data['user_agent'] ?? null,
+            ':screen_resolution' => $data['screen_resolution'] ?? null,
+            ':language' => $data['language'] ?? null,
             ':ip_address' => $ip_address
         ]);
         

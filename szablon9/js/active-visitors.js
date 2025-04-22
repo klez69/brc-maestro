@@ -24,9 +24,9 @@ class ActiveVisitorTracker {
 			const response = await fetch(`${this.apiEndpoint}?action=update`, {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json',
+					'Content-Type': 'application/x-www-form-urlencoded',
 				},
-				body: JSON.stringify({ page: this.currentPage }),
+				body: 'page=' + encodeURIComponent(this.currentPage),
 			})
 
 			if (!response.ok) {

@@ -23,17 +23,28 @@ function logError($message, $context = []) {
 // Funkcja do sprawdzania i tworzenia tabeli
 function ensureTableExists($pdo) {
     try {
-        // Sprawdź czy tabela istnieje
+        // Check if table exists
         $stmt = $pdo->query("SHOW TABLES LIKE 'visitors'");
-        if ($stmt->rowCount() === 0) {
-            // Utwórz tabelę jeśli nie istnieje
-            $sql = file_get_contents(__DIR__ . '/sql/visitors.sql');
+        $tableExists = $stmt->rowCount() > 0;
+        
+        if (!$tableExists) {
+            // Create table if it doesn't exist
+            $sql = "CREATE TABLE IF NOT EXISTS `visitors` (
+                `id` VARCHAR(50) NOT NULL,
+                `page` VARCHAR(255) NOT NULL,
+                `last_activity` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (`id`),
+                INDEX `idx_last_activity` (`last_activity`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+            
             $pdo->exec($sql);
-            logError("Created visitors table");
+            logError("Visitors table created successfully");
+            return true;
         }
-        return true;
+        
+        return $tableExists;
     } catch (PDOException $e) {
-        logError("Failed to create/check visitors table: " . $e->getMessage());
+        logError("Error checking/creating visitors table: " . $e->getMessage());
         return false;
     }
 }
@@ -110,7 +121,7 @@ function updateVisitor($pdo, $page) {
             'status' => 'success',
             'visitor_id' => $visitor_id
         ];
-    } catch (PDOException $e) {
+    } catch (Exception $e) {
         logError("Error updating visitor: " . $e->getMessage(), ['page' => $page]);
         throw $e;
     }
@@ -129,9 +140,27 @@ try {
             break;
             
         case 'update':
-            $data = json_decode(file_get_contents('php://input'), true);
-            $page = $data['page'] ?? '/';
-            echo json_encode(updateVisitor($pdo, $page));
+            // Handle application/x-www-form-urlencoded data
+            $page = isset($_POST['page']) ? $_POST['page'] : '/';
+            
+            // If no POST data, try to read from raw input (for compatibility)
+            if (empty($page) || $page === '/') {
+                $data = json_decode(file_get_contents('php://input'), true);
+                if (is_array($data) && isset($data['page'])) {
+                    $page = $data['page'];
+                }
+            }
+            
+            try {
+                echo json_encode(updateVisitor($pdo, $page));
+            } catch (Exception $e) {
+                logError("Error in updateVisitor: " . $e->getMessage(), ['page' => $page]);
+                http_response_code(500);
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Error updating visitor'
+                ]);
+            }
             break;
             
         default:
