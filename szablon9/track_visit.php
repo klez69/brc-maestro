@@ -13,6 +13,25 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
+// Inicjalizacja połączenia z bazą danych
+$pdo = null;
+try {
+    $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+    ];
+    
+    $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+    error_log("Nawiązano połączenie z bazą danych");
+} catch (PDOException $e) {
+    error_log("Błąd połączenia z bazą danych: " . $e->getMessage());
+    // Nie rzucamy wyjątku tutaj, aby skrypt mógł kontynuować
+    // Obsłużymy brak połączenia w odpowiednich miejscach
+}
+
 // Function to log errors with more detail
 function logError($message, $context = []) {
     $timestamp = date('Y-m-d H:i:s');

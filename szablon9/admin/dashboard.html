@@ -1834,12 +1834,15 @@
 			// Funkcja do ładowania danych o odwiedzających
 			async function loadVisitorStats() {
 				try {
+					console.log('Rozpoczęcie ładowania statystyk odwiedzających...')
+
 					// Pobieranie aktywnych odwiedzających
 					const activeResponse = await fetch('../visitors_api.php?action=get')
 					if (!activeResponse.ok) {
-						throw new Error('Błąd ładowania danych o aktywnych odwiedzających')
+						throw new Error(`Błąd ładowania danych o aktywnych odwiedzających (status: ${activeResponse.status})`)
 					}
 					const activeData = await activeResponse.json()
+					console.log('Dane aktywnych odwiedzających:', activeData)
 
 					if (activeData.status === 'success') {
 						const visitorCount = activeData.visitors.length
@@ -1872,41 +1875,87 @@
 
 							document.getElementById('most-visited-page').textContent = displayPage
 						}
+					} else {
+						console.warn('Odpowiedź API dla aktywnych odwiedzających zawiera błąd:', activeData)
 					}
 
 					// Pobieranie historii odwiedzin (ostatnie 24h)
+					console.log('Próba pobrania historii odwiedzin...')
+					let historyData = null
+
 					try {
+						// Pierwsza próba - ścieżka względna z poziomu katalogu admina
+						console.log('Próba 1: Używam ścieżki ../track_visit.php')
 						const historyResponse = await fetch('../track_visit.php?action=history&days=1&limit=1000')
+						console.log('Status odpowiedzi:', historyResponse.status)
+
 						if (!historyResponse.ok) {
-							console.warn('Próba pierwszej ścieżki nie powiodła się, próbuję alternatywnej ścieżki...')
-							// Spróbujmy alternatywnej ścieżki
+							throw new Error(`Nieudana próba pobrania historii (status: ${historyResponse.status})`)
+						}
+
+						historyData = await historyResponse.json()
+						console.log('Dane historii odwiedzin (próba 1):', historyData)
+					} catch (error1) {
+						console.warn('Próba 1 nie powiodła się:', error1.message)
+
+						try {
+							// Druga próba - alternatywna ścieżka
+							console.log('Próba 2: Używam ścieżki ./track_visit.php')
 							const altHistoryResponse = await fetch('./track_visit.php?action=history&days=1&limit=1000')
-							if (altHistoryResponse.ok) {
-								const historyData = await altHistoryResponse.json()
-								if (historyData.status === 'success') {
-									const historyCount = historyData.history ? historyData.history.length : 0
-									document.getElementById('visitor-history-count').textContent = historyCount
-									document.getElementById('today-visits-count').textContent = historyCount
-								}
-							} else {
-								throw new Error('Nie udało się pobrać historii odwiedzających')
+							console.log('Status alternatywnej odpowiedzi:', altHistoryResponse.status)
+
+							if (!altHistoryResponse.ok) {
+								throw new Error(`Nieudana alternatywna próba pobrania historii (status: ${altHistoryResponse.status})`)
 							}
-						} else {
-							const historyData = await historyResponse.json()
-							if (historyData.status === 'success') {
-								const historyCount = historyData.history ? historyData.history.length : 0
-								document.getElementById('visitor-history-count').textContent = historyCount
-								document.getElementById('today-visits-count').textContent = historyCount
+
+							historyData = await altHistoryResponse.json()
+							console.log('Dane historii odwiedzin (próba 2):', historyData)
+						} catch (error2) {
+							console.warn('Próba 2 nie powiodła się:', error2.message)
+
+							try {
+								// Trzecia próba - bezpośrednia ścieżka
+								console.log('Próba 3: Używam bezwzględnej ścieżki /track_visit.php')
+								const directHistoryResponse = await fetch('/track_visit.php?action=history&days=1&limit=1000')
+								console.log('Status bezpośredniej odpowiedzi:', directHistoryResponse.status)
+
+								if (!directHistoryResponse.ok) {
+									throw new Error(
+										`Nieudana bezpośrednia próba pobrania historii (status: ${directHistoryResponse.status})`
+									)
+								}
+
+								historyData = await directHistoryResponse.json()
+								console.log('Dane historii odwiedzin (próba 3):', historyData)
+							} catch (error3) {
+								console.error('Wszystkie próby pobrania historii odwiedzin nie powiodły się')
+								throw new Error('Nie udało się pobrać historii odwiedzających po 3 próbach')
 							}
 						}
-					} catch (historyError) {
-						console.error('Błąd podczas ładowania historii odwiedzających:', historyError)
+					}
+
+					// Jeśli mamy dane historii, aktualizujemy liczniki
+					if (historyData && historyData.status === 'success') {
+						const historyCount = historyData.history ? historyData.history.length : 0
+						console.log(`Znaleziono ${historyCount} wpisów w historii odwiedzin`)
+						document.getElementById('visitor-history-count').textContent = historyCount
+						document.getElementById('today-visits-count').textContent = historyCount
+					} else {
+						console.warn('Brak poprawnych danych historii odwiedzin:', historyData)
 						// W przypadku błędu ustawiamy 0
 						document.getElementById('visitor-history-count').textContent = '0'
 						document.getElementById('today-visits-count').textContent = '0'
 					}
 				} catch (error) {
 					console.error('Błąd podczas ładowania statystyk odwiedzających:', error)
+					// W przypadku błędu ustawiamy 0 dla wszystkich liczników
+					document.getElementById('visitor-history-count').textContent = '0'
+					document.getElementById('today-visits-count').textContent = '0'
+
+					// Opcjonalnie możemy pokazać toast z informacją o błędzie
+					if (typeof showToast === 'function') {
+						showToast('Nie udało się załadować statystyk odwiedzających', 'error')
+					}
 				}
 			}
 		</script>
