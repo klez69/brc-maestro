@@ -1,0 +1,498 @@
+/* Custom Style Override - 2024 */
+:root {
+	/* Główna paleta kolorów */
+	--primary: #ff3a3a;
+	--primary-light: #ff5c5c;
+	--primary-dark: #cc0000;
+	--secondary: #2a2a2a;
+	--accent: #3a86ff;
+
+	/* Neutralne */
+	--dark: #111111;
+	--dark-medium: #333333;
+	--medium: #777777;
+	--light-medium: #cccccc;
+	--light: #f8f9fa;
+	--white: #ffffff;
+
+	/* Efekty */
+	--shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+	--shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.18);
+	--shadow-primary: 0 5px 15px rgba(255, 58, 58, 0.25);
+
+	/* Border Radius */
+	--radius-sm: 4px;
+	--radius-md: 8px;
+	--radius-lg: 16px;
+	--radius-xl: 24px;
+	--radius-full: 9999px;
+}
+
+/* Text colors */
+.text-primary {
+	color: #ff3a3a !important;
+}
+.text-dark {
+	color: #111111 !important;
+}
+.text-white {
+	color: #ffffff !important;
+}
+
+/* Background colors */
+.bg-primary {
+	background-color: #ff3a3a !important;
+}
+.bg-dark {
+	background-color: #111111 !important;
+}
+.bg-light {
+	background-color: #f8f9fa !important;
+}
+
+/* Shadows */
+.shadow-sm {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+.shadow-md {
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+}
+.shadow-lg {
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* Border radius */
+.rounded-sm {
+	border-radius: 4px !important;
+}
+.rounded-md {
+	border-radius: 8px !important;
+}
+.rounded-lg {
+	border-radius: 16px !important;
+}
+.rounded-full {
+	border-radius: 9999px !important;
+}
+
+/* Glass card */
+.glass-card {
+	background: rgba(255, 255, 255, 0.8) !important;
+	backdrop-filter: blur(10px) !important;
+	-webkit-backdrop-filter: blur(10px) !important;
+	border: 1px solid rgba(255, 255, 255, 0.5) !important;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+	border-radius: 8px !important;
+	padding: 1.5rem !important;
+	transition: all 0.3s ease !important;
+}
+
+.glass-card:hover {
+	transform: translateY(-5px) !important;
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* Header styles */
+#sp-header {
+	background-color: #111111 !important;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+	padding: 0 !important;
+	min-height: 80px !important;
+	height: auto !important;
+	width: 100% !important;
+	position: relative !important;
+	z-index: 1000 !important;
+}
+
+/* Header container styles */
+#sp-header .container,
+#sp-header .container-inner,
+#sp-header .row {
+	height: 70px !important;
+	width: 100% !important;
+	max-width: 1320px !important;
+	margin: 0 auto !important;
+}
+
+#sp-menu .sp-column {
+	height: 100% !important;
+	display: flex !important;
+	justify-content: flex-end !important;
+	align-items: center !important;
+}
+
+/* Menu styles - czarne tło i przyciski w poziomie */
+.sp-megamenu-wrapper {
+	width: 100% !important;
+	max-width: 100% !important;
+	display: block !important;
+}
+
+.sp-megamenu-parent {
+	display: inline-flex !important;
+	flex-direction: row !important;
+	flex-wrap: wrap !important;
+	justify-content: flex-end !important;
+	width: auto !important;
+	float: right !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.sp-megamenu-parent > li {
+	display: inline-block !important;
+	float: left !important;
+	position: relative !important;
+	margin: 0 5px !important;
+	padding: 0 !important;
+	vertical-align: middle !important;
+}
+
+.sp-megamenu-parent > li > a {
+	color: #ffffff !important;
+	padding: 0 10px !important;
+	font-weight: 500 !important;
+	letter-spacing: 0.5px !important;
+	text-transform: uppercase !important;
+	font-size: 14px !important;
+	position: relative !important;
+	display: inline-block !important;
+	height: 70px !important;
+	line-height: 70px !important;
+	transition: all 0.3s ease !important;
+}
+
+/* Horizontal navigation overrides - agresywne nadpisanie */
+nav.sp-megamenu-wrapper ul.sp-megamenu-parent {
+	display: flex !important;
+	flex-direction: row !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	list-style: none !important;
+	width: auto !important;
+}
+
+nav.sp-megamenu-wrapper ul.sp-megamenu-parent > li {
+	display: inline-block !important;
+	position: relative !important;
+	float: left !important;
+}
+
+/* Naprawiony dropdown */
+.sp-dropdown {
+	position: absolute !important;
+	top: 100% !important;
+	left: 0 !important;
+	z-index: 9999 !important;
+	display: none !important;
+}
+
+.sp-megamenu-parent > li:hover > .sp-dropdown {
+	display: block !important;
+}
+
+.sp-dropdown-inner {
+	background: #333 !important;
+	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2) !important;
+	padding: 10px !important;
+}
+
+.sp-dropdown-items {
+	list-style: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+.sp-dropdown-items li {
+	display: block !important;
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+/* Dodatkowe style dla mobilnego menu, które powinno zostać w pionie */
+@media (max-width: 991px) {
+	.offcanvas-menu .menu {
+		flex-direction: column !important;
+		display: flex !important;
+	}
+
+	.offcanvas-menu .menu > li {
+		width: 100% !important;
+		display: block !important;
+	}
+
+	#sp-header {
+		min-height: auto !important;
+	}
+
+	.sp-megamenu-parent {
+		display: flex !important;
+		width: 100% !important;
+		float: none !important;
+		justify-content: center !important;
+	}
+
+	.sp-megamenu-parent > li {
+		display: inline-block !important;
+		float: none !important;
+	}
+
+	/* Zmniejszenie odstępów w menu mobilnym */
+	.sp-megamenu-parent > li > a {
+		padding: 5px 8px !important;
+		font-size: 14px !important;
+	}
+}
+
+/* Bardzo mała szerokość ekranu - menu w 2 rzędach */
+@media (max-width: 767px) {
+	.sp-megamenu-parent {
+		flex-wrap: wrap !important;
+	}
+
+	.sp-megamenu-parent > li {
+		margin: 2px !important;
+	}
+
+	.sp-megamenu-parent > li > a {
+		padding: 4px 6px !important;
+		font-size: 13px !important;
+	}
+}
+
+/* Dodatkowy zabieg - w przypadku gdy menu jest ukryte w mobilnym widoku */
+body:not(.ltr) .sp-megamenu-parent {
+	display: flex !important;
+}
+
+/* Submenu styles */
+.sp-dropdown {
+	background: #222222 !important;
+	border: 1px solid rgba(255, 255, 255, 0.05) !important;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+.sp-dropdown .sp-dropdown-inner {
+	padding: 10px 0 !important;
+}
+
+.sp-dropdown-items > li > a {
+	color: #ffffff !important;
+	padding: 10px 20px !important;
+	font-size: 14px !important;
+	transition: all 0.2s ease !important;
+}
+
+.sp-dropdown-items > li:hover > a {
+	color: var(--primary) !important;
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Mobile menu button */
+.burger-icon > span {
+	background-color: #ffffff !important;
+}
+
+#offcanvas-toggler {
+	color: #ffffff !important;
+}
+
+#offcanvas-toggler:hover {
+	color: var(--primary) !important;
+}
+
+/* Off-canvas menu */
+.offcanvas-menu {
+	background-color: #111111 !important;
+	color: #ffffff !important;
+}
+
+.offcanvas-menu .offcanvas-inner ul.menu > li > a {
+	color: #ffffff !important;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+	padding: 15px 20px !important;
+	font-weight: 500 !important;
+	text-transform: uppercase !important;
+	font-size: 14px !important;
+	transition: all 0.3s ease !important;
+}
+
+.offcanvas-menu .offcanvas-inner ul.menu > li:hover > a {
+	color: var(--primary) !important;
+	background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.close-offcanvas {
+	color: #ffffff !important;
+}
+
+.close-offcanvas:hover {
+	color: var(--primary) !important;
+}
+
+/* Button styles */
+.sppb-btn {
+	transition: all 0.3s ease !important;
+}
+
+.sppb-btn-default {
+	background: #ffffff !important;
+	color: #ff3a3a !important;
+	border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.sppb-btn-default:hover {
+	background: #f8f9fa !important;
+	transform: translateY(-3px) !important;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+}
+
+.sppb-btn-danger,
+.sppb-btn-primary {
+	background: linear-gradient(135deg, #ff3a3a, #cc0000) !important;
+	color: #ffffff !important;
+	box-shadow: 0 5px 15px rgba(255, 58, 58, 0.25) !important;
+}
+
+.sppb-btn-danger:hover,
+.sppb-btn-primary:hover {
+	transform: translateY(-3px) !important;
+	box-shadow: 0 8px 20px rgba(255, 58, 58, 0.35) !important;
+}
+
+/* Modern button style */
+.btn-modern {
+	position: relative !important;
+	overflow: hidden !important;
+	border: none !important;
+	transition: all 0.3s ease !important;
+	background-size: 200% auto !important;
+	font-weight: 500 !important;
+	letter-spacing: 0.5px !important;
+}
+
+.btn-modern::before {
+	content: '' !important;
+	position: absolute !important;
+	top: 0 !important;
+	left: -100% !important;
+	width: 100% !important;
+	height: 100% !important;
+	background: linear-gradient(
+		90deg,
+		rgba(255, 255, 255, 0) 0%,
+		rgba(255, 255, 255, 0.3) 50%,
+		rgba(255, 255, 255, 0) 100%
+	) !important;
+	transition: all 0.6s ease !important;
+}
+
+.btn-modern:hover {
+	transform: translateY(-3px) !important;
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.btn-modern:hover::before {
+	left: 100% !important;
+}
+
+.sppb-btn-default.btn-modern {
+	background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
+	color: var(--primary) !important;
+	border: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+.sppb-btn-primary.btn-modern,
+.sppb-btn-danger.btn-modern {
+	background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+	color: #ffffff !important;
+}
+
+.sppb-btn-dark.btn-modern {
+	background: linear-gradient(135deg, var(--secondary), var(--dark)) !important;
+	color: #ffffff !important;
+}
+
+/* Spacing utilities */
+.mb-4 {
+	margin-bottom: 3rem !important;
+}
+
+.py-2 {
+	padding-top: 1rem !important;
+	padding-bottom: 1rem !important;
+}
+
+/* Button Effects - JavaScript Enhanced */
+/* Efekt Ripple - fala po kliknięciu */
+.btn-ripple-effect {
+	position: absolute !important;
+	top: 0 !important;
+	left: 0 !important;
+	background: rgba(255, 255, 255, 0.5) !important;
+	display: block !important;
+	border-radius: 50% !important;
+	pointer-events: none !important;
+	width: 100px !important;
+	height: 100px !important;
+	margin-top: -50px !important;
+	margin-left: -50px !important;
+	opacity: 0.6 !important;
+	transform: scale(0) !important;
+	z-index: 1 !important;
+	animation: ripple-animation 0.7s ease-out !important;
+}
+
+@keyframes ripple-animation {
+	0% {
+		transform: scale(0);
+		opacity: 0.6;
+	}
+	100% {
+		transform: scale(3);
+		opacity: 0;
+	}
+}
+
+/* Efekt Glow - poświata przy hover */
+.sppb-btn.btn-modern {
+	position: relative !important;
+	z-index: 1 !important;
+}
+
+.btn-hover-glow {
+	transition: all 0.3s ease-in-out !important;
+}
+
+.btn-hover-glow-active {
+	animation: glow-pulse 1.5s infinite alternate !important;
+}
+
+.sppb-btn-default.btn-hover-glow-active {
+	box-shadow: 0 0 15px 5px rgba(255, 58, 58, 0.4) !important;
+}
+
+.sppb-btn-primary.btn-hover-glow-active,
+.sppb-btn-danger.btn-hover-glow-active {
+	box-shadow: 0 0 20px 5px rgba(255, 58, 58, 0.5) !important;
+}
+
+.sppb-btn-dark.btn-hover-glow-active {
+	box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.5) !important;
+}
+
+@keyframes glow-pulse {
+	0% {
+		box-shadow: 0 0 10px 5px rgba(255, 58, 58, 0.3);
+	}
+	100% {
+		box-shadow: 0 0 20px 10px rgba(255, 58, 58, 0.6);
+	}
+}
+
+/* Responsywność menu - ukrycie mobilnego przycisku */
+.sp-megamenu-wrapper .hamburger {
+	display: none !important;
+}

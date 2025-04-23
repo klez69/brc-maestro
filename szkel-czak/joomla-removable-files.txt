@@ -1,0 +1,46 @@
+Lista plików i katalogów do usunięcia z projektu Joomla:
+------------------------------------------------------------
+
+PLIKI JAVASCRIPT DO USUNIĘCIA:
+- media/jui/js/ - Większość plików JS z tego katalogu została zastąpiona przez js/optimize.js
+  - media/jui/js/jquery-noconflict.js
+  - media/jui/js/jquery-migrate.min.js
+- media/system/js/ - Pliki systemowe JS zostały zoptymalizowane
+  - media/system/js/core.js
+- components/com_sppagebuilder/assets/js/ - Zastąpiony przez js/optimize.js
+  - components/com_sppagebuilder/assets/js/sppagebuilder.js
+  - components/com_sppagebuilder/assets/js/jquery.magnific-popup.min.js
+- templates/shaper_helixultimate/js/main.js - Zastąpiony przez js/optimize.js
+- plugins/system/spcookieconsent/assets/js/script.js - Zastąpiony przez js/optimize.js
+
+PLIKI CSS DO USUNIĘCIA:
+- media/jui/css/ - Style zostały zastąpione przez css/optimize.css i css/style.css
+- media/system/css/ - Systemowe style zostały zoptymalizowane
+- components/com_sppagebuilder/assets/css/ - Zastąpione przez css/optimize.css
+  - components/com_sppagebuilder/assets/css/font-awesome.min.css
+  - components/com_sppagebuilder/assets/css/animate.min.css
+  - components/com_sppagebuilder/assets/css/sppagebuilder.css
+  - components/com_sppagebuilder/assets/css/sppagecontainer.css
+  - components/com_sppagebuilder/assets/css/magnific-popup.css
+- plugins/system/helixultimate/assets/css/ - Zastąpione przez css/optimize.css i css/style.css
+  - plugins/system/helixultimate/assets/css/system-j3.min.css
+- templates/shaper_helixultimate/css/ - Większość plików została zastąpiona przez css/optimize.css i css/style.css
+  - templates/shaper_helixultimate/css/v4-shims.min.css
+  - templates/shaper_helixultimate/css/template.css
+  - templates/shaper_helixultimate/css/presets/default.css
+- plugins/system/spcookieconsent/assets/css/style.css - Zastąpione przez css/optimize.css
+
+POZOSTAŁE PLIKI I KATALOGI DO USUNIĘCIA:
+- Niepotrzebne ikony z media/system/images/ mogą zostać usunięte
+- Pliki cache w cache/
+- Pliki tymczasowe w tmp/
+- Kopie zapasowe w administrator/backups/ (po wykonaniu aktualnej kopii)
+- Niewykorzystywane rozszerzenia w components/, modules/, plugins/
+- Nieużywane szablony w templates/ (poza aktywnym)
+
+UWAGI PRZED USUNIĘCIEM:
+1. Upewnij się, że strona działa poprawnie z nowymi plikami optymalizacyjnymi
+2. Wykonaj kopię zapasową całej witryny przed usunięciem plików
+3. Zalecane jest usuwanie plików etapami i testowanie po każdym etapie
+4. Niektóre pliki mogą być wymagane przez rozszerzenia stron trzecich
+5. W razie problemów pliki można przywrócić z kopii zapasowej 

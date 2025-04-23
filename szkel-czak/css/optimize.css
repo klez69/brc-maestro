@@ -1,0 +1,197 @@
+/* Zoptymalizowane style z Joomla - 2024 */
+
+/* Podstawowe styles dla SP Page Builder */
+.sppb-row-container {
+	width: 100%;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: auto;
+	max-width: 1140px;
+}
+
+.sppb-row {
+	display: flex;
+	flex-wrap: wrap;
+	margin-right: -15px;
+	margin-left: -15px;
+}
+
+.sppb-column {
+	position: relative;
+	min-height: 1px;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+/* Klasy kolumn */
+.sppb-col-sm-12 {
+	flex: 0 0 100%;
+	max-width: 100%;
+}
+
+.sppb-col-md-3 {
+	flex: 0 0 25%;
+	max-width: 25%;
+}
+
+.sppb-col-md-4 {
+	flex: 0 0 33.333333%;
+	max-width: 33.333333%;
+}
+
+.sppb-col-md-5 {
+	flex: 0 0 41.666667%;
+	max-width: 41.666667%;
+}
+
+.sppb-col-md-6 {
+	flex: 0 0 50%;
+	max-width: 50%;
+}
+
+.sppb-col-md-7 {
+	flex: 0 0 58.333333%;
+	max-width: 58.333333%;
+}
+
+.sppb-col-md-12 {
+	flex: 0 0 100%;
+	max-width: 100%;
+}
+
+/* Podstawowe styles dla addonów */
+.sppb-addon {
+	position: relative;
+	margin-bottom: 30px;
+}
+
+.sppb-addon-content {
+	position: relative;
+}
+
+/* Wyrównanie tekstu */
+.sppb-text-center {
+	text-align: center !important;
+}
+
+.sppb-text-left {
+	text-align: left !important;
+}
+
+.sppb-text-right {
+	text-align: right !important;
+}
+
+/* Animacje */
+.sppb-wow {
+	visibility: hidden;
+}
+
+.fadeIn {
+	animation-name: fadeIn;
+}
+
+.fadeInDownBig {
+	animation-name: fadeInDownBig;
+}
+
+.zoomInUp {
+	animation-name: zoomInUp;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes fadeInDownBig {
+	from {
+		opacity: 0;
+		transform: translate3d(0, -2000px, 0);
+	}
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+@keyframes zoomInUp {
+	from {
+		opacity: 0;
+		transform: scale3d(0.1, 0.1, 0.1) translate3d(0, 1000px, 0);
+	}
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+/* Responsywność */
+@media (max-width: 767px) {
+	.sppb-hidden-xs {
+		display: none !important;
+	}
+
+	.sppb-col-md-3,
+	.sppb-col-md-4,
+	.sppb-col-md-5,
+	.sppb-col-md-6,
+	.sppb-col-md-7 {
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+	.sppb-hidden-sm {
+		display: none !important;
+	}
+}
+
+/* Cookie consent */
+#sp-cookie-consent {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 9999;
+	padding: 20px;
+	background: rgba(33, 33, 33, 0.9);
+	color: #fff;
+	display: none;
+}
+
+#sp-cookie-consent.position-bottom {
+	bottom: 0;
+	top: auto;
+}
+
+.sp-cookie-consent-content {
+	margin-bottom: 10px;
+}
+
+.sp-cookie-consent-action {
+	display: flex;
+	justify-content: center;
+}
+
+.sp-cookie-close {
+	display: inline-block;
+	padding: 8px 16px;
+	color: #fff;
+	background: #ff3a3a;
+	border-radius: 4px;
+	text-decoration: none;
+	transition: all 0.3s ease;
+}
+
+.sp-cookie-close:hover {
+	background: #cc0000;
+	color: #fff;
+	text-decoration: none;
+}
