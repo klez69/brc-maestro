@@ -18,7 +18,8 @@
 					<a href="dashboard.html" class="block py-2 hover:text-gray-300">Dashboard</a>
 					<a href="visitors.html" class="block py-2 hover:text-gray-300 text-yellow-400">Odwiedzający</a>
 					<a href="visitor_history.html" class="block py-2 hover:text-gray-300">Historia Odwiedzin</a>
-						Wyloguj
+					<button onclick="logout()" class="block py-2 hover:text-gray-300 text-red-400 w-full text-left mt-8">
+						<i class="fas fa-sign-out-alt mr-2"></i> Wyloguj
 					</button>
 				</nav>
 			</aside>
@@ -93,22 +94,111 @@
 		</div>
 
 		<script>
+			// Funkcja do wylogowania
+			function logout() {
+				// Wyczyść dane logowania
+				localStorage.removeItem('adminLoggedIn')
+				sessionStorage.removeItem('adminLoggedIn')
+
+				// Informacja dla użytkownika
+				alert('Wylogowano pomyślnie')
+
+				// Przekieruj do strony wylogowania
+				window.location.href = '../logout.php'
+			}
+
 			// Funkcja sprawdzająca autoryzację
 			function checkAuth() {
-				const isLoggedInLocal = localStorage.getItem('adminLoggedIn') === 'true'
-				const isLoggedInSession = sessionStorage.getItem('adminLoggedIn') === 'true'
-				const isLoggedIn = isLoggedInLocal || isLoggedInSession
+				console.log('Sprawdzanie autoryzacji...')
 
-				if (!isLoggedIn) {
-					window.location.href = 'login.html'
+				try {
+					// Próba odczytu z localStorage
+					let isLoggedInLocal = false
+					try {
+						isLoggedInLocal = localStorage.getItem('adminLoggedIn') === 'true'
+						console.log('Status localStorage (adminLoggedIn):', localStorage.getItem('adminLoggedIn'))
+					} catch (localErr) {
+						console.error('Błąd przy odczycie z localStorage:', localErr)
+					}
+
+					// Próba odczytu z sessionStorage
+					let isLoggedInSession = false
+					try {
+						isLoggedInSession = sessionStorage.getItem('adminLoggedIn') === 'true'
+						console.log('Status sessionStorage (adminLoggedIn):', sessionStorage.getItem('adminLoggedIn'))
+					} catch (sessionErr) {
+						console.error('Błąd przy odczycie z sessionStorage:', sessionErr)
+					}
+
+					// Sprawdzenie cookie jako awaryjny mechanizm
+					const hasCookie = document.cookie.indexOf('admin_token') >= 0
+					console.log('Cookie admin_token:', hasCookie ? 'ISTNIEJE' : 'BRAK')
+
+					const isLoggedIn = isLoggedInLocal || isLoggedInSession || hasCookie
+
+					// Diagnostyka
+					console.log('Status autoryzacji:', {
+						localStorage: isLoggedInLocal,
+						sessionStorage: isLoggedInSession,
+						cookie: hasCookie,
+						finalResult: isLoggedIn,
+					})
+
+					if (!isLoggedIn) {
+						console.log('Brak autoryzacji, przekierowanie do strony logowania')
+						// Awaryjne wyczyszczenie potencjalnie uszkodzonych danych
+						try {
+							localStorage.removeItem('adminLoggedIn')
+							sessionStorage.removeItem('adminLoggedIn')
+						} catch (e) {
+							console.error('Błąd przy czyszczeniu storage:', e)
+						}
+
+						// Zastosuj opóźnienie, aby zapewnić, że konsola pokaże nasze logi
+						setTimeout(function () {
+							window.location.href = 'login.html?error=session&cause=invalid_auth'
+						}, 100)
+						return false
+					}
+
+					// Próba naprawy niespójności w danych logowania
+					if (isLoggedInLocal && !isLoggedInSession) {
+						try {
+							console.log('Synchronizacja danych: localStorage -> sessionStorage')
+							sessionStorage.setItem('adminLoggedIn', 'true')
+						} catch (e) {
+							console.error('Nie udało się zsynchronizować danych do sessionStorage:', e)
+						}
+					} else if (!isLoggedInLocal && isLoggedInSession) {
+						try {
+							console.log('Synchronizacja danych: sessionStorage -> localStorage')
+							localStorage.setItem('adminLoggedIn', 'true')
+						} catch (e) {
+							console.error('Nie udało się zsynchronizować danych do localStorage:', e)
+						}
+					}
+
+					// Jeśli zalogowany, pokaż panel
+					document.body.style.display = 'block'
+					return true
+				} catch (error) {
+					console.error('Poważny błąd podczas sprawdzania autoryzacji:', error)
+					// Awaryjne przekierowanie w przypadku błędu
+					setTimeout(function () {
+						window.location.href = 'login.html?error=auth_error&message=' + encodeURIComponent(error.message)
+					}, 100)
 					return false
 				}
-				return true
 			}
 
 			// Wykonaj sprawdzenie autoryzacji natychmiast
-			if (!checkAuth()) {
-				throw new Error('Brak autoryzacji')
+			try {
+				if (!checkAuth()) {
+					console.log('Sprawdzenie autoryzacji zwróciło false - zatrzymywanie inicjalizacji panelu')
+					throw new Error('Brak autoryzacji')
+				}
+			} catch (authError) {
+				console.error('Błąd podczas sprawdzania autoryzacji:', authError)
 			}
 
 			// Globalne zmienne
@@ -180,11 +270,12 @@
 					// Dodaj nowe wiersze
 					data.visitors.forEach(visitor => {
 						// Determine user status and style
-						const isLoggedIn = visitor.is_logged_in === 1 || visitor.is_logged_in === '1' || visitor.is_logged_in === true;
-						const statusText = isLoggedIn ? 'Zalogowany' : 'Gość';
-						const statusClass = isLoggedIn ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
-						const username = visitor.username || '—';
-						const role = visitor.role || '—';
+						const isLoggedIn =
+							visitor.is_logged_in === 1 || visitor.is_logged_in === '1' || visitor.is_logged_in === true
+						const statusText = isLoggedIn ? 'Zalogowany' : 'Gość'
+						const statusClass = isLoggedIn ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+						const username = visitor.username || '—'
+						const role = visitor.role || '—'
 
 						const row = document.createElement('tr')
 						row.innerHTML = `

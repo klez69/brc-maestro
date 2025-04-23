@@ -83,7 +83,11 @@
 									</a>
 								</li>
 								<li>
-									<a href="login.html" class="block px-4 py-2 rounded hover:bg-cream transition-all">
+									<a
+										href="#"
+										onclick="logout(); return false;"
+										class="block px-4 py-2 rounded hover:bg-cream text-red-600 transition-all"
+									>
 										<i class="fas fa-sign-out-alt mr-2"></i>Wyloguj
 									</a>
 								</li>
@@ -998,6 +1002,30 @@
 
 				// Inicjalizacja
 				init()
+			})
+
+			// Funkcja do wylogowania
+			function logout() {
+				// Wyczyść dane logowania
+				localStorage.removeItem('adminLoggedIn')
+				sessionStorage.removeItem('adminLoggedIn')
+
+				// Informacja dla użytkownika
+				alert('Wylogowano pomyślnie')
+
+				// Przekieruj do strony wylogowania
+				window.location.href = '../logout.php'
+			}
+
+			// Sprawdzenie autoryzacji
+			document.addEventListener('DOMContentLoaded', function () {
+				// Sprawdź, czy użytkownik jest zalogowany
+				const isLoggedInLocal = localStorage.getItem('adminLoggedIn') === 'true'
+				const isLoggedInSession = sessionStorage.getItem('adminLoggedIn') === 'true'
+
+				if (!isLoggedInLocal && !isLoggedInSession) {
+					window.location.href = 'login.html?error=session'
+				}
 			})
 		</script>
 	</body>

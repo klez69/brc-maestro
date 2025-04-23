@@ -775,7 +775,23 @@
 					</div>
 					<h1>Panel Administracyjny - Salon Migdał</h1>
 				</div>
-				<a href="#" id="logout-btn" class="btn btn-sm btn-danger"> <i class="fas fa-sign-out-alt"></i> Wyloguj </a>
+				<a
+					href="#"
+					id="logout-btn"
+					class="btn btn-sm btn-danger"
+					style="
+						background-color: #d9534f;
+						color: white;
+						padding: 6px 12px;
+						border-radius: 4px;
+						text-decoration: none;
+						font-weight: 500;
+						display: flex;
+						align-items: center;
+					"
+				>
+					<i class="fas fa-sign-out-alt mr-1" style="margin-right: 5px"></i> Wyloguj
+				</a>
 			</header>
 
 			<!-- Main Content -->
@@ -1088,39 +1104,118 @@
 		</div>
 
 		<script>
-			// Sprawdzanie, czy użytkownik jest zalogowany
-			window.onload = function () {
-				console.log('Sprawdzanie statusu logowania...')
-				console.log('localStorage adminLoggedIn:', localStorage.getItem('adminLoggedIn'))
-				console.log('sessionStorage adminLoggedIn:', sessionStorage.getItem('adminLoggedIn'))
+			// Funkcja sprawdzająca autoryzację
+			function checkAuth() {
+				console.log('Sprawdzanie autoryzacji...')
 
-				// Sprawdź, czy użytkownik jest zalogowany
-				if (localStorage.getItem('adminLoggedIn') !== 'true' && sessionStorage.getItem('adminLoggedIn') !== 'true') {
-					console.log('Użytkownik nie jest zalogowany - przekierowanie do login.html')
-					window.location.href = 'login.html'
-				} else {
-					console.log('Użytkownik zalogowany - pokazywanie dashboardu')
+				try {
+					// Próba odczytu z localStorage
+					let isLoggedInLocal = false
+					try {
+						isLoggedInLocal = localStorage.getItem('adminLoggedIn') === 'true'
+						console.log('Status localStorage (adminLoggedIn):', localStorage.getItem('adminLoggedIn'))
+					} catch (localErr) {
+						console.error('Błąd przy odczycie z localStorage:', localErr)
+					}
+
+					// Próba odczytu z sessionStorage
+					let isLoggedInSession = false
+					try {
+						isLoggedInSession = sessionStorage.getItem('adminLoggedIn') === 'true'
+						console.log('Status sessionStorage (adminLoggedIn):', sessionStorage.getItem('adminLoggedIn'))
+					} catch (sessionErr) {
+						console.error('Błąd przy odczycie z sessionStorage:', sessionErr)
+					}
+
+					// Sprawdzenie cookie jako awaryjny mechanizm
+					const hasCookie = document.cookie.indexOf('admin_token') >= 0
+					console.log('Cookie admin_token:', hasCookie ? 'ISTNIEJE' : 'BRAK')
+
+					const isLoggedIn = isLoggedInLocal || isLoggedInSession || hasCookie
+
+					// Diagnostyka
+					console.log('Status autoryzacji:', {
+						localStorage: isLoggedInLocal,
+						sessionStorage: isLoggedInSession,
+						cookie: hasCookie,
+						finalResult: isLoggedIn,
+					})
+
+					if (!isLoggedIn) {
+						console.log('Brak autoryzacji, przekierowanie do strony logowania')
+						// Awaryjne wyczyszczenie potencjalnie uszkodzonych danych
+						try {
+							localStorage.removeItem('adminLoggedIn')
+							sessionStorage.removeItem('adminLoggedIn')
+						} catch (e) {
+							console.error('Błąd przy czyszczeniu storage:', e)
+						}
+
+						// Zastosuj opóźnienie, aby zapewnić, że konsola pokaże nasze logi
+						setTimeout(function () {
+							window.location.href = 'login.html?error=session&cause=invalid_auth'
+						}, 100)
+						return false
+					}
+
+					// Próba naprawy niespójności w danych logowania
+					if (isLoggedInLocal && !isLoggedInSession) {
+						try {
+							console.log('Synchronizacja danych: localStorage -> sessionStorage')
+							sessionStorage.setItem('adminLoggedIn', 'true')
+						} catch (e) {
+							console.error('Nie udało się zsynchronizować danych do sessionStorage:', e)
+						}
+					} else if (!isLoggedInLocal && isLoggedInSession) {
+						try {
+							console.log('Synchronizacja danych: sessionStorage -> localStorage')
+							localStorage.setItem('adminLoggedIn', 'true')
+						} catch (e) {
+							console.error('Nie udało się zsynchronizować danych do localStorage:', e)
+						}
+					}
+
+					// Jeśli zalogowany, pokaż panel
 					document.body.style.display = 'block'
-					loadGalleryData()
-					updateStatistics()
+					return true
+				} catch (error) {
+					console.error('Poważny błąd podczas sprawdzania autoryzacji:', error)
+					// Awaryjne przekierowanie w przypadku błędu
+					setTimeout(function () {
+						window.location.href = 'login.html?error=auth_error&message=' + encodeURIComponent(error.message)
+					}, 100)
+					return false
 				}
+			}
+
+			// Wykonaj sprawdzenie autoryzacji natychmiast
+			try {
+				if (!checkAuth()) {
+					console.log('Sprawdzenie autoryzacji zwróciło false - zatrzymywanie inicjalizacji panelu')
+					throw new Error('Brak autoryzacji')
+				}
+			} catch (authError) {
+				console.error('Błąd podczas sprawdzania autoryzacji:', authError)
+			}
+
+			// Funkcja do wylogowania
+			function logout() {
+				// Wyczyść dane logowania
+				localStorage.removeItem('adminLoggedIn')
+				sessionStorage.removeItem('adminLoggedIn')
+
+				// Informacja dla użytkownika
+				alert('Wylogowano pomyślnie')
+
+				// Przekieruj do strony wylogowania
+				window.location.href = '../logout.php'
 			}
 
 			// Obsługa wylogowania
 			document.getElementById('logout-btn').addEventListener('click', function (e) {
 				e.preventDefault()
 				console.log('Przycisk wylogowania kliknięty')
-
-				// Czyszczenie localStorage i sessionStorage
-				localStorage.removeItem('adminLoggedIn')
-				sessionStorage.removeItem('adminLoggedIn')
-
-				// Dodanie informacji dla użytkownika
-				console.log('Dane logowania usunięte z przeglądarki')
-				alert('Wylogowano pomyślnie')
-
-				// Przekierowanie do strony wylogowania
-				window.location.href = '../logout.php'
+				logout()
 			})
 
 			// Nawigacja między sekcjami

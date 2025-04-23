@@ -211,6 +211,22 @@
 					transform: translateX(5px);
 				}
 			}
+
+			/* Debug info styles */
+			.debug-info {
+				background-color: #f8f9fa;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				padding: 10px;
+				margin-top: 20px;
+				font-size: 12px;
+				color: #666;
+				display: none;
+			}
+
+			.debug-info.show {
+				display: block;
+			}
 		</style>
 	</head>
 	<body class="bg-cream">
@@ -220,6 +236,9 @@
 					<h1 class="text-3xl font-semibold text-brown mb-2">Panel Administracyjny</h1>
 					<p class="text-gray-600">Salon Fryzjerski Migdał</p>
 				</div>
+
+				<!-- Komunikat o błędzie -->
+				<div id="error-message" class="bg-red-100 text-red-700 p-3 rounded-md mb-4 hidden"></div>
 
 				<!-- Prosty formularz logowania -->
 				<form id="loginForm" class="space-y-6" action="../login_direct.php" method="post">
@@ -255,11 +274,6 @@
 						</label>
 					</div>
 
-					<!-- Komunikat o błędzie -->
-					<div id="error-message" class="text-red-600 text-center hidden">
-						<!-- Error messages will be inserted via JavaScript -->
-					</div>
-
 					<!-- Główny przycisk logowania -->
 					<div>
 						<button
@@ -282,6 +296,21 @@
 					</button>
 				</div>
 
+				<!-- Debug button -->
+				<div class="mt-2 text-center">
+					<button id="debug-toggle" onclick="toggleDebugInfo()" class="text-xs text-gray-500 hover:underline">
+						Pokaż/ukryj informacje debugowania
+					</button>
+				</div>
+
+				<!-- Debug info -->
+				<div id="debug-info" class="debug-info">
+					<h3 class="font-bold mb-2">Informacje debugowania:</h3>
+					<div id="session-info"></div>
+					<div id="browser-info" class="mt-2"></div>
+					<div id="cookies-info" class="mt-2"></div>
+				</div>
+
 				<div class="mt-6 text-center">
 					<a href="../index.html" class="text-sm text-brown hover:underline">
 						<i class="fas fa-arrow-left mr-1"></i> Powrót do strony głównej
@@ -297,6 +326,7 @@
 				// Sprawdź URL, czy zawiera parametr error
 				const urlParams = new URLSearchParams(window.location.search)
 				const errorParam = urlParams.get('error')
+				const errorReason = urlParams.get('reason')
 
 				if (errorParam) {
 					const errorMessage = document.getElementById('error-message')
@@ -304,13 +334,21 @@
 					if (errorMessage) {
 						// Ustawienie odpowiedniego komunikatu błędu
 						if (errorParam === 'auth') {
-							errorMessage.textContent = 'Nieprawidłowa nazwa użytkownika lub hasło.'
+							if (errorReason === 'empty') {
+								errorMessage.textContent = 'Wprowadź nazwę użytkownika i hasło.'
+							} else if (errorReason === 'invalid_password') {
+								errorMessage.textContent = 'Nieprawidłowe hasło.'
+							} else {
+								errorMessage.textContent = 'Nieprawidłowa nazwa użytkownika lub hasło.'
+							}
 						} else if (errorParam === 'session') {
 							errorMessage.textContent = 'Sesja wygasła. Zaloguj się ponownie.'
 						} else if (errorParam === 'csrf') {
 							errorMessage.textContent = 'Błąd zabezpieczeń. Spróbuj ponownie.'
 						} else if (errorParam === 'server') {
 							errorMessage.textContent = 'Błąd serwera. Spróbuj ponownie później.'
+						} else if (errorParam === 'method') {
+							errorMessage.textContent = 'Nieprawidłowa metoda żądania. Użyj formularza logowania.'
 						}
 
 						// Pokaż komunikat błędu
@@ -318,11 +356,54 @@
 					}
 				}
 
+				// Utwórz informacje debugowania
+				updateDebugInfo()
+
 				// Sprawdź, czy użytkownik jest już zalogowany
-				if (localStorage.getItem('adminLoggedIn') === 'true' || sessionStorage.getItem('adminLoggedIn') === 'true') {
+				checkLoginStatus()
+			})
+
+			// Funkcja sprawdzająca status logowania
+			function checkLoginStatus() {
+				const isLoggedInLS = localStorage.getItem('adminLoggedIn') === 'true'
+				const isLoggedInSS = sessionStorage.getItem('adminLoggedIn') === 'true'
+
+				if (isLoggedInLS || isLoggedInSS) {
+					console.log('Przekierowanie do weryfikacji sesji')
 					window.location.href = '../verify_session.php'
 				}
-			})
+			}
+
+			// Funkcja do aktualizacji informacji debugowania
+			function updateDebugInfo() {
+				const sessionInfo = document.getElementById('session-info')
+				const browserInfo = document.getElementById('browser-info')
+				const cookiesInfo = document.getElementById('cookies-info')
+
+				// Informacje o sesji
+				sessionInfo.innerHTML =
+					'<strong>Local Storage:</strong> adminLoggedIn = ' +
+					(localStorage.getItem('adminLoggedIn') || 'nie ustawiono') +
+					'<br><strong>Session Storage:</strong> adminLoggedIn = ' +
+					(sessionStorage.getItem('adminLoggedIn') || 'nie ustawiono')
+
+				// Informacje o przeglądarce
+				browserInfo.innerHTML = '<strong>Przeglądarka:</strong> ' + navigator.userAgent
+
+				// Informacje o ciasteczkach
+				cookiesInfo.innerHTML = '<strong>Cookies:</strong> ' + (document.cookie ? document.cookie : 'brak cookies')
+			}
+
+			// Funkcja do przełączania widoczności informacji debugowania
+			function toggleDebugInfo() {
+				const debugInfo = document.getElementById('debug-info')
+				debugInfo.classList.toggle('show')
+
+				// Aktualizuj informacje debugowania przy każdym pokazaniu
+				if (debugInfo.classList.contains('show')) {
+					updateDebugInfo()
+				}
+			}
 
 			// Funkcja alternatywnego logowania - wysyła dane bezpośrednio do auth.php
 			function loginAlternative() {
