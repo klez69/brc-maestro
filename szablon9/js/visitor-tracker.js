@@ -3,7 +3,7 @@ class VisitorTracker {
 		// Get base URL dynamically
 		const scriptPath = document.currentScript ? document.currentScript.src : ''
 		const baseUrl = scriptPath.substring(0, scriptPath.lastIndexOf('/js/'))
-		this.apiEndpoint = `${baseUrl}/track_visit.php`
+		this.apiEndpoint = `${baseUrl}/visitors_api.php?action=update`
 
 		console.log('VisitorTracker initialized with endpoint:', this.apiEndpoint)
 
@@ -98,12 +98,7 @@ class VisitorTracker {
 		if (localStorage.getItem('adminLoggedIn') === 'true' || sessionStorage.getItem('adminLoggedIn') === 'true') {
 			user.isLoggedIn = true
 			user.role = 'admin'
-		}
-
-		// Check for visitor_id cookie
-		const visitorIdMatch = document.cookie.match(/visitor_id=([^;]+)/)
-		if (visitorIdMatch && visitorIdMatch[1]) {
-			user.visitorId = visitorIdMatch[1]
+			user.username = 'Administrator' // Default admin username
 		}
 
 		// Check for admin_token cookie
@@ -112,11 +107,33 @@ class VisitorTracker {
 			user.isLoggedIn = true
 			user.role = 'admin'
 			user.token = adminTokenMatch[1]
+			user.username = 'Administrator' // Default admin username
 		}
 
-		// Try to get username from session if available
+		// Check for username in window object
 		if (typeof window.username !== 'undefined') {
 			user.username = window.username
+		} else if (typeof window.userInfo !== 'undefined' && window.userInfo.username) {
+			user.username = window.userInfo.username
+			user.role = window.userInfo.role || user.role
+			user.userId = window.userInfo.userId || user.userId
+			user.isLoggedIn = true
+		}
+
+		// Try to get any user data from localStorage as well
+		try {
+			const userData = localStorage.getItem('userData')
+			if (userData) {
+				const parsedUserData = JSON.parse(userData)
+				if (parsedUserData && parsedUserData.username) {
+					user.username = parsedUserData.username
+					user.role = parsedUserData.role || user.role
+					user.userId = parsedUserData.id || user.userId
+					user.isLoggedIn = true
+				}
+			}
+		} catch (e) {
+			console.error('Error getting user data from localStorage:', e)
 		}
 
 		return user
@@ -129,39 +146,40 @@ class VisitorTracker {
 
 			// Only collect essential information
 			const visitData = {
+				page: window.location.pathname,
 				page_url: window.location.pathname,
-				referrer: document.referrer ? new URL(document.referrer).hostname : 'direct',
-				user_agent: navigator.userAgent.split(' ').slice(-1)[0], // Collect minimal UA info
+				referrer: document.referrer || 'direct',
+				user_agent: navigator.userAgent,
 				screen_resolution: `${window.screen.width}x${window.screen.height}`,
 				language: navigator.language,
 				visit_timestamp: new Date().toISOString(),
 				user_info: userInfo, // Add user information
 			}
 
-			console.log('Attempting to track visit using endpoint:', this.apiEndpoint)
+			console.log('Tracking visit data:', visitData)
 
 			const response = await fetch(this.apiEndpoint, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({
-					...visitData,
-					// Upewnij się, że page_url zawiera rzeczywistą ścieżkę strony
-					page_url: window.location.pathname,
-					// Jeśli referrer nie istnieje, jest to wejście bezpośrednie
-					referrer: document.referrer || 'direct',
-				}),
+				body: JSON.stringify(visitData),
 				// Include credentials to get session information
 				credentials: 'same-origin',
 			})
 
 			if (!response.ok) {
-				const errorData = await response.json()
-				throw new Error(errorData.error || 'Failed to track visit')
+				const errorText = await response.text()
+				try {
+					const errorData = JSON.parse(errorText)
+					throw new Error(errorData.message || 'Failed to track visit')
+				} catch (jsonError) {
+					throw new Error(`Failed to track visit: ${errorText}`)
+				}
 			}
 
-			console.log('Visit tracked successfully')
+			const result = await response.json()
+			console.log('Visit tracked successfully:', result)
 		} catch (error) {
 			console.error('Error tracking visit:', error)
 			// Don't throw the error - just log it to avoid breaking the page

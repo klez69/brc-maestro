@@ -224,7 +224,11 @@ function getVisitors($pdo) {
     try {
         // First check if tables exist
         if (!ensureTablesExist($pdo)) {
-            throw new Exception("Visitors tables do not exist");
+            return [
+                'status' => 'success',
+                'visitors' => [],
+                'message' => 'Tabela odwiedzających nie istnieje jeszcze'
+            ];
         }
         
         // Clean old entries
@@ -235,13 +239,20 @@ function getVisitors($pdo) {
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         
+        $visitors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
         return [
             'status' => 'success',
-            'visitors' => $stmt->fetchAll(PDO::FETCH_ASSOC)
+            'visitors' => $visitors,
+            'count' => count($visitors)
         ];
     } catch (Exception $e) {
         logError("Failed to get visitors: " . $e->getMessage());
-        throw $e;
+        return [
+            'status' => 'error',
+            'message' => 'Błąd podczas pobierania aktywnych odwiedzających: ' . $e->getMessage(),
+            'visitors' => []
+        ];
     }
 }
 
@@ -270,7 +281,10 @@ function getVisitorHistory($pdo, $days = 7, $limit = 100) {
         ];
     } catch (Exception $e) {
         logError("Failed to get visitor history: " . $e->getMessage());
-        throw $e;
+        return [
+            'status' => 'error',
+            'message' => 'Failed to get visitor history: ' . $e->getMessage()
+        ];
     }
 }
 
@@ -446,7 +460,18 @@ try {
     
     switch ($action) {
         case 'get':
-            echo json_encode(getVisitors($pdo));
+            try {
+                $result = getVisitors($pdo);
+                echo json_encode($result);
+            } catch (Exception $e) {
+                logError("Error getting visitors: " . $e->getMessage());
+                http_response_code(500);
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Error getting visitors: ' . $e->getMessage(),
+                    'visitors' => []
+                ]);
+            }
             break;
             
         case 'history':
@@ -463,7 +488,18 @@ try {
                 $limit = 100; // Domyślnie 100 wpisów
             }
             
-            echo json_encode(getVisitorHistory($pdo, $days, $limit));
+            try {
+                $result = getVisitorHistory($pdo, $days, $limit);
+                echo json_encode($result);
+            } catch (Exception $e) {
+                logError("Error getting visitor history: " . $e->getMessage());
+                http_response_code(500);
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Error getting visitor history: ' . $e->getMessage(),
+                    'history' => []
+                ]);
+            }
             break;
             
         case 'update':

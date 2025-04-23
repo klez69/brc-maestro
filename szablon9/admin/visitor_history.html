@@ -338,7 +338,7 @@
 
 				try {
 					const daysFilter = document.getElementById('daysFilter').value
-					const response = await fetch(`../track_visit.php?action=history&days=${daysFilter}&limit=1000`)
+					const response = await fetch(`../visitors_api.php?action=history&days=${daysFilter}&limit=1000`)
 
 					if (!response.ok) {
 						throw new Error(`Błąd HTTP: ${response.status}`)
