@@ -11,6 +11,13 @@ class VisitorTracker {
 		if (this.isTrackingAllowed()) {
 			this.trackVisit()
 		}
+
+		// Set up interval to update tracking data periodically
+		setInterval(() => {
+			if (this.isTrackingAllowed()) {
+				this.trackVisit()
+			}
+		}, 120000) // Update every 2 minutes
 	}
 
 	isTrackingAllowed() {
@@ -73,8 +80,53 @@ class VisitorTracker {
 		})
 	}
 
+	getCurrentUser() {
+		// Check various sources to identify the current user
+		const user = {
+			isLoggedIn: false,
+			username: null,
+			role: null,
+			userId: null,
+		}
+
+		// Check PHP session via cookie
+		if (document.cookie.includes('PHPSESSID')) {
+			user.isLoggedIn = true
+		}
+
+		// Check adminLoggedIn flag in localStorage or sessionStorage
+		if (localStorage.getItem('adminLoggedIn') === 'true' || sessionStorage.getItem('adminLoggedIn') === 'true') {
+			user.isLoggedIn = true
+			user.role = 'admin'
+		}
+
+		// Check for visitor_id cookie
+		const visitorIdMatch = document.cookie.match(/visitor_id=([^;]+)/)
+		if (visitorIdMatch && visitorIdMatch[1]) {
+			user.visitorId = visitorIdMatch[1]
+		}
+
+		// Check for admin_token cookie
+		const adminTokenMatch = document.cookie.match(/admin_token=([^;]+)/)
+		if (adminTokenMatch && adminTokenMatch[1]) {
+			user.isLoggedIn = true
+			user.role = 'admin'
+			user.token = adminTokenMatch[1]
+		}
+
+		// Try to get username from session if available
+		if (typeof window.username !== 'undefined') {
+			user.username = window.username
+		}
+
+		return user
+	}
+
 	async trackVisit() {
 		try {
+			// Get current user information
+			const userInfo = this.getCurrentUser()
+
 			// Only collect essential information
 			const visitData = {
 				page_url: window.location.pathname,
@@ -83,6 +135,7 @@ class VisitorTracker {
 				screen_resolution: `${window.screen.width}x${window.screen.height}`,
 				language: navigator.language,
 				visit_timestamp: new Date().toISOString(),
+				user_info: userInfo, // Add user information
 			}
 
 			console.log('Attempting to track visit using endpoint:', this.apiEndpoint)
@@ -99,8 +152,8 @@ class VisitorTracker {
 					// Jeśli referrer nie istnieje, jest to wejście bezpośrednie
 					referrer: document.referrer || 'direct',
 				}),
-				// Ensure no credentials are sent
-				credentials: 'omit',
+				// Include credentials to get session information
+				credentials: 'same-origin',
 			})
 
 			if (!response.ok) {

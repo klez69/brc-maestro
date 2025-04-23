@@ -859,3 +859,42 @@ a {
 		height: 60px;
 	}
 }
+
+/* Visitor Counter Styles */
+#visitor-counter {
+	box-shadow: 0 4px 15px rgba(139, 109, 92, 0.2);
+	border: 1px solid rgba(139, 109, 92, 0.1);
+	backdrop-filter: blur(5px);
+	-webkit-backdrop-filter: blur(5px);
+	animation: fadeIn 0.5s ease-out;
+}
+
+#visitor-counter:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 6px 18px rgba(139, 109, 92, 0.3);
+}
+
+#active-visitors-count {
+	color: var(--brown);
+	transition: all 0.3s ease;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (max-width: 768px) {
+	#visitor-counter {
+		bottom: 4rem;
+		left: 1rem;
+		font-size: 0.875rem;
+		padding: 0.5rem 0.75rem;
+	}
+}

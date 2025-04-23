@@ -86,13 +86,44 @@ function ensureTablesExist($pdo) {
                 screen_resolution VARCHAR(20),
                 language VARCHAR(10),
                 ip_address VARCHAR(45),
+                is_logged_in TINYINT(1) DEFAULT 0,
+                username VARCHAR(50) NULL,
+                role VARCHAR(20) NULL,
+                user_id VARCHAR(50) NULL,
                 last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                INDEX idx_last_activity (last_activity)
+                INDEX idx_last_activity (last_activity),
+                INDEX idx_is_logged_in (is_logged_in),
+                INDEX idx_username (username)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
             
             $pdo->exec($sql);
             logError("Created visitors table successfully");
+        } else {
+            // Check if the table has the user columns and add them if not
+            $columns = $pdo->query("SHOW COLUMNS FROM visitors")->fetchAll(PDO::FETCH_COLUMN);
+            
+            if (!in_array('is_logged_in', $columns)) {
+                $pdo->exec("ALTER TABLE visitors ADD COLUMN is_logged_in TINYINT(1) DEFAULT 0");
+                $pdo->exec("ALTER TABLE visitors ADD INDEX idx_is_logged_in (is_logged_in)");
+                logError("Added is_logged_in column to visitors table");
+            }
+            
+            if (!in_array('username', $columns)) {
+                $pdo->exec("ALTER TABLE visitors ADD COLUMN username VARCHAR(50) NULL");
+                $pdo->exec("ALTER TABLE visitors ADD INDEX idx_username (username)");
+                logError("Added username column to visitors table");
+            }
+            
+            if (!in_array('role', $columns)) {
+                $pdo->exec("ALTER TABLE visitors ADD COLUMN role VARCHAR(20) NULL");
+                logError("Added role column to visitors table");
+            }
+            
+            if (!in_array('user_id', $columns)) {
+                $pdo->exec("ALTER TABLE visitors ADD COLUMN user_id VARCHAR(50) NULL");
+                logError("Added user_id column to visitors table");
+            }
         }
         
         // Check if visitor_history table exists
@@ -112,14 +143,45 @@ function ensureTablesExist($pdo) {
                 screen_resolution VARCHAR(20),
                 language VARCHAR(10),
                 ip_address VARCHAR(45),
+                is_logged_in TINYINT(1) DEFAULT 0,
+                username VARCHAR(50) NULL,
+                role VARCHAR(20) NULL,
+                user_id VARCHAR(50) NULL,
                 visit_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (id),
                 INDEX idx_visitor_id (visitor_id),
-                INDEX idx_visit_time (visit_time)
+                INDEX idx_visit_time (visit_time),
+                INDEX idx_is_logged_in (is_logged_in),
+                INDEX idx_username (username)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
             
             $pdo->exec($sql);
             logError("Created visitor_history table successfully");
+        } else {
+            // Check if the table has the user columns and add them if not
+            $columns = $pdo->query("SHOW COLUMNS FROM visitor_history")->fetchAll(PDO::FETCH_COLUMN);
+            
+            if (!in_array('is_logged_in', $columns)) {
+                $pdo->exec("ALTER TABLE visitor_history ADD COLUMN is_logged_in TINYINT(1) DEFAULT 0");
+                $pdo->exec("ALTER TABLE visitor_history ADD INDEX idx_is_logged_in (is_logged_in)");
+                logError("Added is_logged_in column to visitor_history table");
+            }
+            
+            if (!in_array('username', $columns)) {
+                $pdo->exec("ALTER TABLE visitor_history ADD COLUMN username VARCHAR(50) NULL");
+                $pdo->exec("ALTER TABLE visitor_history ADD INDEX idx_username (username)");
+                logError("Added username column to visitor_history table");
+            }
+            
+            if (!in_array('role', $columns)) {
+                $pdo->exec("ALTER TABLE visitor_history ADD COLUMN role VARCHAR(20) NULL");
+                logError("Added role column to visitor_history table");
+            }
+            
+            if (!in_array('user_id', $columns)) {
+                $pdo->exec("ALTER TABLE visitor_history ADD COLUMN user_id VARCHAR(50) NULL");
+                logError("Added user_id column to visitor_history table");
+            }
         }
         
         return true;
@@ -246,41 +308,76 @@ function updateVisitor($pdo, $page) {
         $screenResolution = $data['screen_resolution'] ?? null;
         $language = $data['language'] ?? null;
         
+        // Get user information
+        $isLoggedIn = 0;
+        $username = null;
+        $role = null;
+        $userId = null;
+        
+        // Check if user information is available in the data
+        if (isset($data['user_info'])) {
+            $isLoggedIn = $data['user_info']['isLoggedIn'] ? 1 : 0;
+            $username = $data['user_info']['username'];
+            $role = $data['user_info']['role'];
+            $userId = $data['user_info']['userId'];
+        }
+        
+        // Check PHP session
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Override with session data if available (more reliable than frontend)
+        if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+            $isLoggedIn = 1;
+            $username = $_SESSION['username'] ?? $username;
+            $role = $_SESSION['role'] ?? $role;
+            $userId = $_SESSION['user_id'] ?? $userId;
+        }
+        
         // Begin transaction
         $pdo->beginTransaction();
         
-        // Update active visitors table - using direct variable binding to ensure all parameters match
+        // Update active visitors table with user information
         $sql = "INSERT INTO visitors 
-                (id, page, referrer, user_agent, screen_resolution, language, ip_address, last_activity)
-                VALUES 
-                (?, ?, ?, ?, ?, ?, ?, NOW())
+                (id, page, referrer, user_agent, screen_resolution, language, ip_address, is_logged_in, username, role, user_id) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
                 ON DUPLICATE KEY UPDATE 
-                    page = VALUES(page),
-                    referrer = VALUES(referrer),
-                    user_agent = VALUES(user_agent),
-                    screen_resolution = VALUES(screen_resolution),
-                    language = VALUES(language),
-                    ip_address = VALUES(ip_address),
-                    last_activity = NOW()";
+                page = ?, 
+                referrer = ?,
+                user_agent = ?,
+                screen_resolution = ?,
+                language = ?,
+                is_logged_in = ?,
+                username = ?,
+                role = ?,
+                user_id = ?,
+                last_activity = NOW()";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$visitor_id, $pageUrl, $referrer, $userAgent, $screenResolution, $language, $ip_address]);
+        $stmt->execute([
+            $visitor_id, $pageUrl, $referrer, $userAgent, $screenResolution, $language, $ip_address, $isLoggedIn, $username, $role, $userId,
+            $pageUrl, $referrer, $userAgent, $screenResolution, $language, $isLoggedIn, $username, $role, $userId
+        ]);
         
-        // Add to visitor history - using direct variable binding to ensure all parameters match
-        $sql = "INSERT INTO visitor_history 
-                (visitor_id, page, referrer, user_agent, screen_resolution, language, ip_address)
-                VALUES 
-                (?, ?, ?, ?, ?, ?, ?)";
+        // Add to visitor history with user information
+        $sql = "INSERT INTO visitor_history
+                (visitor_id, page, referrer, user_agent, screen_resolution, language, ip_address, is_logged_in, username, role, user_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$visitor_id, $pageUrl, $referrer, $userAgent, $screenResolution, $language, $ip_address]);
+        $stmt->execute([
+            $visitor_id, $pageUrl, $referrer, $userAgent, $screenResolution, $language, $ip_address, $isLoggedIn, $username, $role, $userId
+        ]);
         
         // Commit transaction
         $pdo->commit();
         
         return [
             'status' => 'success',
-            'visitor_id' => $visitor_id
+            'visitor_id' => $visitor_id,
+            'is_logged_in' => $isLoggedIn,
+            'username' => $username
         ];
     } catch (Exception $e) {
         // Rollback transaction on error
@@ -289,7 +386,7 @@ function updateVisitor($pdo, $page) {
         }
         
         logError("Error updating visitor: " . $e->getMessage(), [
-            'page' => $page ?? 'unknown'
+            'page' => $page
         ]);
         throw $e;
     }

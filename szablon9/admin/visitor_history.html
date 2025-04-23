@@ -74,6 +74,9 @@
 									<th class="px-4 py-2 text-left">ID</th>
 									<th class="px-4 py-2 text-left">Visitor ID</th>
 									<th class="px-4 py-2 text-left">Strona</th>
+									<th class="px-4 py-2 text-left">Status</th>
+									<th class="px-4 py-2 text-left">Użytkownik</th>
+									<th class="px-4 py-2 text-left">Rola</th>
 									<th class="px-4 py-2 text-left">IP</th>
 									<th class="px-4 py-2 text-left">Data odwiedzin</th>
 								</tr>
@@ -201,12 +204,22 @@
 				// Dodaj dane do tabeli
 				for (let i = startIndex; i < endIndex; i++) {
 					const entry = currentData[i]
+					// Determine user status and style
+					const isLoggedIn = entry.is_logged_in === 1 || entry.is_logged_in === '1' || entry.is_logged_in === true
+					const statusText = isLoggedIn ? 'Zalogowany' : 'Gość'
+					const statusClass = isLoggedIn ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+					const username = entry.username || '—'
+					const role = entry.role || '—'
+
 					const row = document.createElement('tr')
 					row.className = i % 2 === 0 ? 'bg-white' : 'bg-gray-50'
 					row.innerHTML = `
 						<td class="border px-4 py-2">${entry.id}</td>
 						<td class="border px-4 py-2">${entry.visitor_id}</td>
 						<td class="border px-4 py-2">${entry.page}</td>
+						<td class="border px-4 py-2"><span class="px-2 py-1 rounded ${statusClass}">${statusText}</span></td>
+						<td class="border px-4 py-2">${username}</td>
+						<td class="border px-4 py-2">${role}</td>
 						<td class="border px-4 py-2">${entry.ip_address}</td>
 						<td class="border px-4 py-2">${formatDate(entry.visit_time)}</td>
 					`

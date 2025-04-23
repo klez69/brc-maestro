@@ -975,6 +975,15 @@
 			<i class="fas fa-chevron-up"></i>
 		</a>
 
+		<!-- Active Visitors Counter -->
+		<div
+			id="visitor-counter"
+			class="fixed bottom-6 left-6 flex items-center bg-white rounded-full px-4 py-2 shadow-lg text-brown transition-all hover:shadow-xl z-50"
+		>
+			<i class="fas fa-users mr-2 text-brown"></i>
+			<span class="font-medium">Teraz na stronie: <span id="active-visitors-count" class="font-bold">0</span></span>
+		</div>
+
 		<!-- Scripts -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 		<script src="gallery.js"></script>
@@ -999,5 +1008,6 @@
 			setInterval(updateVisitorStatus, 30000)
 		</script>
 		<script src="js/visitor-tracker.js"></script>
+		<script src="js/visitor-counter.js"></script>
 	</body>
 </html>

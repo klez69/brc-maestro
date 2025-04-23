@@ -67,6 +67,9 @@
 								<tr class="bg-gray-100">
 									<th class="px-4 py-2 text-left">ID</th>
 									<th class="px-4 py-2 text-left">Strona</th>
+									<th class="px-4 py-2 text-left">Status</th>
+									<th class="px-4 py-2 text-left">Użytkownik</th>
+									<th class="px-4 py-2 text-left">Rola</th>
 									<th class="px-4 py-2 text-left">Ostatnia aktywność</th>
 								</tr>
 							</thead>
@@ -176,10 +179,20 @@
 
 					// Dodaj nowe wiersze
 					data.visitors.forEach(visitor => {
+						// Determine user status and style
+						const isLoggedIn = visitor.is_logged_in === 1 || visitor.is_logged_in === '1' || visitor.is_logged_in === true;
+						const statusText = isLoggedIn ? 'Zalogowany' : 'Gość';
+						const statusClass = isLoggedIn ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
+						const username = visitor.username || '—';
+						const role = visitor.role || '—';
+
 						const row = document.createElement('tr')
 						row.innerHTML = `
 							<td class="border px-4 py-2">${visitor.id}</td>
 							<td class="border px-4 py-2">${visitor.page}</td>
+							<td class="border px-4 py-2"><span class="px-2 py-1 rounded ${statusClass}">${statusText}</span></td>
+							<td class="border px-4 py-2">${username}</td>
+							<td class="border px-4 py-2">${role}</td>
 							<td class="border px-4 py-2">${formatDate(visitor.last_activity)}</td>
 						`
 						tableBody.appendChild(row)
