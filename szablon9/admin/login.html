@@ -211,22 +211,6 @@
 					transform: translateX(5px);
 				}
 			}
-
-			/* Debug info styles */
-			.debug-info {
-				background-color: #f8f9fa;
-				border: 1px solid #ddd;
-				border-radius: 4px;
-				padding: 10px;
-				margin-top: 20px;
-				font-size: 12px;
-				color: #666;
-				display: none;
-			}
-
-			.debug-info.show {
-				display: block;
-			}
 		</style>
 	</head>
 	<body class="bg-cream">
@@ -286,31 +270,7 @@
 					</div>
 				</form>
 
-				<!-- Alternatywny przycisk logowania dla rozwiązania problemów-->
-				<div class="mt-3">
-					<button
-						onclick="loginAlternative()"
-						class="w-full text-brown border border-brown py-2 px-4 rounded-md text-sm"
-					>
-						Logowanie alternatywne
-					</button>
-				</div>
-
 				<!-- Debug button -->
-				<div class="mt-2 text-center">
-					<button id="debug-toggle" onclick="toggleDebugInfo()" class="text-xs text-gray-500 hover:underline">
-						Pokaż/ukryj informacje debugowania
-					</button>
-				</div>
-
-				<!-- Debug info -->
-				<div id="debug-info" class="debug-info">
-					<h3 class="font-bold mb-2">Informacje debugowania:</h3>
-					<div id="session-info"></div>
-					<div id="browser-info" class="mt-2"></div>
-					<div id="cookies-info" class="mt-2"></div>
-				</div>
-
 				<div class="mt-6 text-center">
 					<a href="../index.html" class="text-sm text-brown hover:underline">
 						<i class="fas fa-arrow-left mr-1"></i> Powrót do strony głównej
@@ -356,9 +316,6 @@
 					}
 				}
 
-				// Utwórz informacje debugowania
-				updateDebugInfo()
-
 				// Sprawdź, czy użytkownik jest już zalogowany
 				checkLoginStatus()
 			})
@@ -372,89 +329,6 @@
 					console.log('Przekierowanie do weryfikacji sesji')
 					window.location.href = '../verify_session.php'
 				}
-			}
-
-			// Funkcja do aktualizacji informacji debugowania
-			function updateDebugInfo() {
-				const sessionInfo = document.getElementById('session-info')
-				const browserInfo = document.getElementById('browser-info')
-				const cookiesInfo = document.getElementById('cookies-info')
-
-				// Informacje o sesji
-				sessionInfo.innerHTML =
-					'<strong>Local Storage:</strong> adminLoggedIn = ' +
-					(localStorage.getItem('adminLoggedIn') || 'nie ustawiono') +
-					'<br><strong>Session Storage:</strong> adminLoggedIn = ' +
-					(sessionStorage.getItem('adminLoggedIn') || 'nie ustawiono')
-
-				// Informacje o przeglądarce
-				browserInfo.innerHTML = '<strong>Przeglądarka:</strong> ' + navigator.userAgent
-
-				// Informacje o ciasteczkach
-				cookiesInfo.innerHTML = '<strong>Cookies:</strong> ' + (document.cookie ? document.cookie : 'brak cookies')
-			}
-
-			// Funkcja do przełączania widoczności informacji debugowania
-			function toggleDebugInfo() {
-				const debugInfo = document.getElementById('debug-info')
-				debugInfo.classList.toggle('show')
-
-				// Aktualizuj informacje debugowania przy każdym pokazaniu
-				if (debugInfo.classList.contains('show')) {
-					updateDebugInfo()
-				}
-			}
-
-			// Funkcja alternatywnego logowania - wysyła dane bezpośrednio do auth.php
-			function loginAlternative() {
-				const username = document.getElementById('username').value
-				const password = document.getElementById('password').value
-				const remember = document.getElementById('remember').checked
-
-				if (!username || !password) {
-					alert('Wprowadź nazwę użytkownika i hasło')
-					return
-				}
-
-				// Tworzymy formularz i wysyłamy go
-				const form = document.createElement('form')
-				form.method = 'POST'
-				form.action = '../auth.php'
-				form.style.display = 'none'
-
-				// Pole username
-				const usernameInput = document.createElement('input')
-				usernameInput.type = 'text'
-				usernameInput.name = 'username'
-				usernameInput.value = username
-				form.appendChild(usernameInput)
-
-				// Pole password
-				const passwordInput = document.createElement('input')
-				passwordInput.type = 'password'
-				passwordInput.name = 'password'
-				passwordInput.value = password
-				form.appendChild(passwordInput)
-
-				// Pole remember
-				if (remember) {
-					const rememberInput = document.createElement('input')
-					rememberInput.type = 'checkbox'
-					rememberInput.name = 'remember'
-					rememberInput.checked = true
-					form.appendChild(rememberInput)
-				}
-
-				// Token CSRF
-				const tokenInput = document.createElement('input')
-				tokenInput.type = 'hidden'
-				tokenInput.name = 'token'
-				tokenInput.value = 'bypass_token_' + Math.random().toString(36).substring(2)
-				form.appendChild(tokenInput)
-
-				// Dodajemy formularz do strony i wysyłamy
-				document.body.appendChild(form)
-				form.submit()
 			}
 		</script>
 	</body>

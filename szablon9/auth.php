@@ -66,57 +66,6 @@ $remember = isset($_POST['remember']) ? true : false;
 logAuthError("Próba logowania użytkownika: ".$username, $username);
 logAuthError("Hasło wprowadzone: ".($password ? 'TAK' : 'NIE'), $username);
 
-// Debug mode - pozwala zalogować się użytkownikowi admin bez sprawdzania hasła
-// UWAGA: Usunąć w wersji produkcyjnej!
-if ($username === 'admin') {
-    error_log("DEBUG MODE: Automatyczne logowanie dla użytkownika admin");
-    
-    // Regeneruj ID sesji
-    session_regenerate_id(true);
-    
-    // Generuj unikalny token sesji
-    $sessionId = bin2hex(random_bytes(32));
-    
-    // Zapisz dane sesji
-    $_SESSION['user_id'] = 1;
-    $_SESSION['username'] = $username;
-    $_SESSION['role'] = 'admin';
-    $_SESSION['logged_in'] = true;
-    $_SESSION['session_id'] = $sessionId;
-    $_SESSION['last_activity'] = time();
-    $_SESSION['expires'] = time() + (30 * 60); // 30 minut
-    
-    // Usuń token CSRF
-    unset($_SESSION['csrf_token']);
-    
-    // Upewnij się, że sesja została zapisana
-    session_write_close();
-    
-    // Zapisz informację w localStorage dla kompatybilności z obecnym kodem
-    echo '<script>
-        if (' . ($remember ? 'true' : 'false') . ') {
-            localStorage.setItem("adminLoggedIn", "true");
-        } else {
-            sessionStorage.setItem("adminLoggedIn", "true");
-        }
-        
-        // Sprawdź czy dane zostały zapisane poprawnie
-        console.log("Zapisano dane logowania:", ' . ($remember ? 'localStorage.getItem("adminLoggedIn")' : 'sessionStorage.getItem("adminLoggedIn")') . ');
-        
-        // Dodaj krótkie opóźnienie przed przekierowaniem, aby upewnić się, że dane zostały zapisane
-        setTimeout(function() {
-            // Dodatkowe sprawdzenie i ewentualna próba ponownego zapisu
-            if (' . ($remember ? '!localStorage.getItem("adminLoggedIn")' : '!sessionStorage.getItem("adminLoggedIn")') . ') {
-                console.error("Nie udało się zapisać danych logowania. Próba ponowna...");
-                ' . ($remember ? 'localStorage.setItem("adminLoggedIn", "true");' : 'sessionStorage.setItem("adminLoggedIn", "true");') . '
-            }
-            // Przekieruj do panelu administratora
-            window.location.href = "admin/dashboard.html";
-        }, 200);
-    </script>';
-    exit;
-}
-
 // Walidacja podstawowa
 if (empty($username) || empty($password)) {
     logAuthError('Empty username or password');
@@ -331,68 +280,6 @@ try {
     }
 } catch (PDOException $e) {
     logAuthError('Database error: ' . $e->getMessage(), $username);
-    
-    // Próba alternatywnego logowania przy problemach z bazą
-    if ($username === 'admin' && $password === 'admin123') {
-        logAuthError("Logowanie awaryjne przy błędzie bazy: " . $e->getMessage(), $username);
-        
-        // Regeneruj ID sesji
-        session_regenerate_id(true);
-        
-        // Generuj unikalny token sesji
-        $sessionId = bin2hex(random_bytes(32));
-        
-        // Zapisz dane sesji
-        $_SESSION['user_id'] = 1;
-        $_SESSION['username'] = $username;
-        $_SESSION['role'] = 'admin';
-        $_SESSION['logged_in'] = true;
-        $_SESSION['session_id'] = $sessionId;
-        $_SESSION['last_activity'] = time();
-        $_SESSION['expires'] = time() + (30 * 60); // 30 minut
-        
-        // Usuń token CSRF
-        unset($_SESSION['csrf_token']);
-        
-        // Jeśli zaznaczono "zapamiętaj mnie"
-        if ($remember) {
-            setcookie('admin_token', $sessionId, [
-                'expires' => time() + (30 * 24 * 60 * 60),
-                'path' => '/',
-                'secure' => ENVIRONMENT === 'production',
-                'httponly' => true,
-                'samesite' => 'Strict'
-            ]);
-        }
-        
-        // Upewnij się, że sesja została zapisana
-        session_write_close();
-        
-        // Zapisz informację w localStorage dla kompatybilności z obecnym kodem
-        echo '<script>
-            if (' . ($remember ? 'true' : 'false') . ') {
-                localStorage.setItem("adminLoggedIn", "true");
-            } else {
-                sessionStorage.setItem("adminLoggedIn", "true");
-            }
-            
-            // Sprawdź czy dane zostały zapisane poprawnie
-            console.log("Zapisano dane logowania:", ' . ($remember ? 'localStorage.getItem("adminLoggedIn")' : 'sessionStorage.getItem("adminLoggedIn")') . ');
-            
-            // Dodaj krótkie opóźnienie przed przekierowaniem, aby upewnić się, że dane zostały zapisane
-            setTimeout(function() {
-                // Dodatkowe sprawdzenie i ewentualna próba ponownego zapisu
-                if (' . ($remember ? '!localStorage.getItem("adminLoggedIn")' : '!sessionStorage.getItem("adminLoggedIn")') . ') {
-                    console.error("Nie udało się zapisać danych logowania. Próba ponowna...");
-                    ' . ($remember ? 'localStorage.setItem("adminLoggedIn", "true");' : 'sessionStorage.setItem("adminLoggedIn", "true");') . '
-                }
-                // Przekieruj do panelu administratora
-                window.location.href = "admin/dashboard.html";
-            }, 200);
-        </script>';
-        exit;
-    }
-    
     header('Location: admin/login.html?error=server');
     exit();
 } catch (Exception $e) {

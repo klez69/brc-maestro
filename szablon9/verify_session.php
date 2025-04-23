@@ -67,53 +67,8 @@ function checkTokenAuth($pdo) {
             $tableExists = $stmt->rowCount() > 0;
             
             if (!$tableExists) {
-                logSessionError("Tabela auth_tokens nie istnieje - tworzę ją");
-                $pdo->exec("CREATE TABLE IF NOT EXISTS auth_tokens (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    user_id INT NOT NULL,
-                    token VARCHAR(255) NOT NULL,
-                    expires DATETIME NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )");
-                
-                // Dodaj rekord dla admina, jeśli token nie istnieje w bazie
-                $stmt = $pdo->prepare("INSERT INTO auth_tokens (user_id, token, expires) VALUES (?, ?, ?)");
-                $stmt->execute([1, $token, date('Y-m-d H:i:s', time() + (30 * 24 * 60 * 60))]);
-                logSessionError("Utworzono rekord dla tokenu użytkownika admin");
-                
-                // Utwórz domyślnego użytkownika admin, jeśli nie istnieje
-                $stmt = $pdo->prepare("SHOW TABLES LIKE 'admin_users'");
-                $stmt->execute();
-                $adminTableExists = $stmt->rowCount() > 0;
-                
-                if (!$adminTableExists) {
-                    $pdo->exec("CREATE TABLE IF NOT EXISTS admin_users (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        username VARCHAR(50) NOT NULL UNIQUE,
-                        password VARCHAR(255) NOT NULL,
-                        role VARCHAR(20) NOT NULL DEFAULT 'admin',
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )");
-                    
-                    $hashedPassword = password_hash('admin123', PASSWORD_DEFAULT);
-                    $stmt = $pdo->prepare("INSERT INTO admin_users (id, username, password, role) VALUES (?, ?, ?, ?)");
-                    $stmt->execute([1, 'admin', $hashedPassword, 'admin']);
-                    logSessionError("Utworzono tabelę admin_users i dodano użytkownika admin");
-                }
-                
-                // Regeneruj ID sesji
-                session_regenerate_id(true);
-                
-                // Ustaw dane sesji
-                $_SESSION['user_id'] = 1;
-                $_SESSION['username'] = 'admin';
-                $_SESSION['role'] = 'admin';
-                $_SESSION['logged_in'] = true;
-                $_SESSION['session_id'] = $token;
-                $_SESSION['last_activity'] = time();
-                $_SESSION['expires'] = time() + (30 * 60); // 30 minut
-                
-                return true;
+                logSessionError("Tabela auth_tokens nie istnieje");
+                return false;
             }
             
             // Sprawdź token w bazie danych
@@ -147,30 +102,8 @@ function checkTokenAuth($pdo) {
                     return true;
                 }
             } else {
-                logSessionError("Token nie znaleziony w bazie lub wygasł - dodaję awaryjnie dla admina");
-                
-                // Dodaj token dla admina, jeśli nie istnieje
-                try {
-                    $stmt = $pdo->prepare("INSERT INTO auth_tokens (user_id, token, expires) VALUES (?, ?, ?)");
-                    $stmt->execute([1, $token, date('Y-m-d H:i:s', time() + (30 * 24 * 60 * 60))]);
-                    logSessionError("Dodano awaryjny token dla użytkownika admin");
-                    
-                    // Regeneruj ID sesji
-                    session_regenerate_id(true);
-                    
-                    // Ustaw dane sesji
-                    $_SESSION['user_id'] = 1;
-                    $_SESSION['username'] = 'admin';
-                    $_SESSION['role'] = 'admin';
-                    $_SESSION['logged_in'] = true;
-                    $_SESSION['session_id'] = $token;
-                    $_SESSION['last_activity'] = time();
-                    $_SESSION['expires'] = time() + (30 * 60); // 30 minut
-                    
-                    return true;
-                } catch (PDOException $innerException) {
-                    logSessionError("Błąd dodawania awaryjnego tokena: " . $innerException->getMessage());
-                }
+                logSessionError("Token nie znaleziony w bazie lub wygasł");
+                return false;
             }
         } catch (PDOException $e) {
             logSessionError('Database error checking token: ' . $e->getMessage());
@@ -264,52 +197,6 @@ try {
     } catch (PDOException $e) {
         logSessionError('Database connection error: ' . $e->getMessage());
         // Nie wyrzucamy błędu, próbujemy jeszcze sprawdzić local/sessionStorage
-    }
-    
-    // Sprawdź localStorage/sessionStorage
-    $hasAdminToken = isset($_COOKIE['admin_token']);
-    logSessionError("Sprawdzanie cookie admin_token: " . ($hasAdminToken ? "ISTNIEJE" : "BRAK"));
-    
-    // Obsługa tymczasowa - kompatybilna z istniejącym kodem
-    // To rozwiązanie powinno być docelowo usunięte na rzecz pełnej weryfikacji po stronie serwera
-    if ($hasAdminToken) {
-        logSessionError("Logowanie awaryjne poprzez cookie admin_token");
-        
-        // Regeneruj ID sesji
-        session_regenerate_id(true);
-        
-        // Tymczasowo przyjmujemy, że lokalny token jest wystarczający
-        $_SESSION['user_id'] = 1;
-        $_SESSION['username'] = 'admin';
-        $_SESSION['role'] = 'admin';
-        $_SESSION['logged_in'] = true;
-        $_SESSION['session_id'] = bin2hex(random_bytes(32));
-        $_SESSION['last_activity'] = time();
-        $_SESSION['expires'] = time() + (30 * 60); // 30 minut
-        
-        // Upewnij się, że sesja została zapisana
-        session_write_close();
-        
-        // JavaScript do ustawienia localStorage
-        echo '<script>
-            localStorage.setItem("adminLoggedIn", "true");
-            
-            // Sprawdź czy dane zostały zapisane poprawnie
-            console.log("Zapisano dane logowania w localStorage:", localStorage.getItem("adminLoggedIn"));
-            
-            // Dodaj krótkie opóźnienie przed przekierowaniem, aby upewnić się, że dane zostały zapisane
-            setTimeout(function() {
-                // Dodatkowe sprawdzenie i ewentualna próba ponownego zapisu
-                if (!localStorage.getItem("adminLoggedIn")) {
-                    console.error("Nie udało się zapisać danych logowania w localStorage. Próba ponowna...");
-                    localStorage.setItem("adminLoggedIn", "true");
-                }
-                
-                // Przekieruj do panelu administratora
-                window.location.href = "admin/dashboard.html";
-            }, 200);
-        </script>';
-        exit();
     }
     
     // Brak sesji lub token nieważny

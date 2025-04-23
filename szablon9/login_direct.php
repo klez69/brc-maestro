@@ -54,67 +54,6 @@ $remember = isset($_POST['remember']) ? true : false;
 // Zapis próby logowania
 logAuthError("Login attempt for username: $username", false);
 
-// Sprawdź, czy to jest użytkownik testowy (awaryjny)
-if ($username === 'admin' && $password === 'admin123') {
-    logAuthError("Successful login with test credentials for: $username");
-    
-    // Generuj unikalny identyfikator sesji
-    $sessionId = bin2hex(random_bytes(32));
-    
-    // Wyczyść istniejącą sesję
-    session_regenerate_id(true);
-    
-    // Ustaw dane sesji
-    $_SESSION['user_id'] = 1;
-    $_SESSION['username'] = 'admin';
-    $_SESSION['role'] = 'admin';
-    $_SESSION['logged_in'] = true;
-    $_SESSION['session_id'] = $sessionId;
-    $_SESSION['last_activity'] = time();
-    $_SESSION['expires'] = time() + (30 * 60); // 30 minut
-    
-    // Ustaw token "zapamiętaj mnie", jeśli wybrano
-    if ($remember) {
-        $token = bin2hex(random_bytes(32));
-        $expires = time() + (30 * 24 * 60 * 60); // 30 dni
-        setcookie('admin_token', $token, [
-            'expires' => $expires,
-            'path' => '/',
-            'secure' => ENVIRONMENT === 'production',
-            'httponly' => true,
-            'samesite' => 'Strict'
-        ]);
-    }
-    
-    // Upewnij się, że sesja została zapisana
-    session_write_close();
-    
-    // Użyj JavaScript do ustawienia localStorage/sessionStorage i przekierowania
-    echo '<script>
-        // Zapisz dane logowania w przeglądarce
-        ' . ($remember ? 'localStorage.setItem("adminLoggedIn", "true");' : 'sessionStorage.setItem("adminLoggedIn", "true");') . '
-        sessionStorage.setItem("adminSessionId", "' . $sessionId . '");
-        
-        // Zapisz nazwę użytkownika
-        ' . ($remember ? 'localStorage.setItem("adminUsername", "' . $username . '");' : 'sessionStorage.setItem("adminUsername", "' . $username . '");') . '
-        
-        // Sprawdź czy dane zostały zapisane poprawnie
-        console.log("Zapisano dane logowania:", ' . ($remember ? 'localStorage.getItem("adminLoggedIn")' : 'sessionStorage.getItem("adminLoggedIn")') . ');
-        
-        // Dodaj krótkie opóźnienie przed przekierowaniem, aby upewnić się, że dane zostały zapisane
-        setTimeout(function() {
-            // Dodatkowe sprawdzenie i ewentualna próba ponownego zapisu
-            if (' . ($remember ? '!localStorage.getItem("adminLoggedIn")' : '!sessionStorage.getItem("adminLoggedIn")') . ') {
-                console.error("Nie udało się zapisać danych logowania. Próba ponowna...");
-                ' . ($remember ? 'localStorage.setItem("adminLoggedIn", "true");' : 'sessionStorage.setItem("adminLoggedIn", "true");') . '
-            }
-            // Przekieruj do panelu administratora
-            window.location.href = "admin/dashboard.html";
-        }, 200);
-    </script>';
-    exit();
-}
-
 // Próba połączenia z bazą danych
 try {
     $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
@@ -245,67 +184,6 @@ try {
 } catch (PDOException $e) {
     $errorMessage = 'Database error: ' . $e->getMessage();
     $error = logAuthError($errorMessage);
-    
-    // Próba awaryjnego logowania z domyślnymi poświadczeniami
-    if ($username === 'admin' && $password === 'admin123') {
-        logAuthError("Fallback login with test credentials after database error");
-        
-        // Generuj nowe ID sesji
-        session_regenerate_id(true);
-        
-        // Generuj unikalny identyfikator sesji
-        $sessionId = bin2hex(random_bytes(32));
-        
-        // Ustaw dane sesji
-        $_SESSION['user_id'] = 1;
-        $_SESSION['username'] = 'admin';
-        $_SESSION['role'] = 'admin';
-        $_SESSION['logged_in'] = true;
-        $_SESSION['session_id'] = $sessionId;
-        $_SESSION['last_activity'] = time();
-        $_SESSION['expires'] = time() + (30 * 60); // 30 minut
-        
-        // Ustaw token "zapamiętaj mnie", jeśli wybrano
-        if ($remember) {
-            $token = bin2hex(random_bytes(32));
-            setcookie('admin_token', $token, [
-                'expires' => time() + (30 * 24 * 60 * 60),
-                'path' => '/',
-                'secure' => ENVIRONMENT === 'production',
-                'httponly' => true,
-                'samesite' => 'Strict'
-            ]);
-        }
-        
-        // Upewnij się, że sesja została zapisana
-        session_write_close();
-        
-        // Użyj JavaScript do ustawienia localStorage/sessionStorage i przekierowania
-        echo '<script>
-            // Zapisz dane logowania w przeglądarce
-            ' . ($remember ? 'localStorage.setItem("adminLoggedIn", "true");' : 'sessionStorage.setItem("adminLoggedIn", "true");') . '
-            sessionStorage.setItem("adminSessionId", "' . $sessionId . '");
-            
-            // Zapisz nazwę użytkownika
-            ' . ($remember ? 'localStorage.setItem("adminUsername", "' . $username . '");' : 'sessionStorage.setItem("adminUsername", "' . $username . '");') . '
-            
-            // Sprawdź czy dane zostały zapisane poprawnie
-            console.log("Zapisano dane logowania:", ' . ($remember ? 'localStorage.getItem("adminLoggedIn")' : 'sessionStorage.getItem("adminLoggedIn")') . ');
-            
-            // Dodaj krótkie opóźnienie przed przekierowaniem, aby upewnić się, że dane zostały zapisane
-            setTimeout(function() {
-                // Dodatkowe sprawdzenie i ewentualna próba ponownego zapisu
-                if (' . ($remember ? '!localStorage.getItem("adminLoggedIn")' : '!sessionStorage.getItem("adminLoggedIn")') . ') {
-                    console.error("Nie udało się zapisać danych logowania. Próba ponowna...");
-                    ' . ($remember ? 'localStorage.setItem("adminLoggedIn", "true");' : 'sessionStorage.setItem("adminLoggedIn", "true");') . '
-                }
-                // Przekieruj do panelu administratora
-                window.location.href = "admin/dashboard.html";
-            }, 200);
-        </script>';
-        exit();
-    }
-    
     header('Location: admin/login.html?error=database' . ($error ? '&debug=' . urlencode($error) : ''));
     exit();
 } catch (Exception $e) {
