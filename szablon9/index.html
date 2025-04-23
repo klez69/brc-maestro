@@ -46,10 +46,10 @@
 
 		<link rel="canonical" href="https://salon.migdaltarnow.pl/" />
 		<link rel="alternate" hreflang="pl-PL" href="https://salon.migdaltarnow.pl/" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+		<link rel="stylesheet" href="css/tailwind.min.css" />
+		<link rel="stylesheet" href="css/all.min.css" />
+		<link rel="stylesheet" href="css/animate.min.css" />
+		<link rel="stylesheet" href="css/aos.css" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
@@ -826,7 +826,7 @@
 								</div>
 								<div>
 									<h4 class="font-semibold mb-1" style="color: var(--brown)">Telefon - dział męski</h4>
-									<p style="color: var(--dark)">+48 884 802 309</p>
+									<a href="tel:+48884802309" style="color: var(--dark)">+48 884 802 309</a>
 								</div>
 							</div>
 							<div class="flex items-start mb-6">
@@ -835,7 +835,7 @@
 								</div>
 								<div>
 									<h4 class="font-semibold mb-1" style="color: var(--brown)">Telefon - dział damski</h4>
-									<p style="color: var(--dark)">+48 123 456 789</p>
+									<a href="tel:+48123456789" style="color: var(--dark)">+48 123 456 789</a>
 								</div>
 							</div>
 							<div class="flex items-start mb-6">
@@ -975,39 +975,10 @@
 			<i class="fas fa-chevron-up"></i>
 		</a>
 
-		<!-- Active Visitors Counter -->
-		<div
-			id="visitor-counter"
-			class="fixed bottom-6 left-6 flex items-center bg-white rounded-full px-4 py-2 shadow-lg text-brown transition-all hover:shadow-xl z-50"
-		>
-			<i class="fas fa-users mr-2 text-brown"></i>
-			<span class="font-medium">Teraz na stronie: <span id="active-visitors-count" class="font-bold">0</span></span>
-		</div>
-
 		<!-- Scripts -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+		<script src="js/aos.js"></script>
 		<script src="gallery.js"></script>
 		<script src="js/dynamic-gallery.js"></script>
 		<script src="scripts.js"></script>
-		<script>
-			// Funkcja do aktualizacji statusu odwiedzającego
-			function updateVisitorStatus() {
-				const currentPage = window.location.pathname
-
-				fetch('visitors_api.php?action=update', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
-					body: 'page=' + encodeURIComponent(currentPage),
-				})
-			}
-
-			// Aktualizuj status co 30 sekund
-			updateVisitorStatus()
-			setInterval(updateVisitorStatus, 30000)
-		</script>
-		<script src="js/visitor-tracker.js"></script>
-		<script src="js/visitor-counter.js"></script>
 	</body>
 </html>
