@@ -312,6 +312,7 @@
 					<a href="#portfolio" class="py-2 text-brown border-b border-gray-100">Galeria</a>
 					<a href="#opinie" class="py-2 text-brown border-b border-gray-100">Opinie</a>
 					<a href="#kontakt" class="py-2 text-brown border-b border-gray-100">Kontakt</a>
+					<a href="admin/login.html" class="py-2 text-brown border-b border-gray-100">Panel administracyjny</a>
 				</nav>
 			</div>
 		</header>
@@ -1026,6 +1027,45 @@
 		<script src="gallery.js"></script>
 		<script src="js/dynamic-gallery.js"></script>
 		<script src="scripts.js"></script>
+
+		<!-- Skrypt korygujący problemy na urządzeniach mobilnych -->
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				// Zapobieganie przypadkowym odświeżeniom przy przewijaniu strony w dół
+				let startY
+				document.addEventListener(
+					'touchstart',
+					function (e) {
+						startY = e.touches[0].clientY
+					},
+					{ passive: true }
+				)
+
+				document.addEventListener(
+					'touchmove',
+					function (e) {
+						// Jeśli użytkownik jest na górze strony i próbuje przeciągnąć w dół
+						if (window.scrollY === 0 && e.touches[0].clientY > startY + 10) {
+							e.preventDefault()
+						}
+					},
+					{ passive: false }
+				)
+
+				// Poprawka dla obsługi przycisków w menu mobilnym
+				const mobileMenuLinks = document.querySelectorAll('#mobile-menu a')
+				mobileMenuLinks.forEach(link => {
+					link.addEventListener('touchend', function (e) {
+						if (!this.href.includes('admin/login.html')) return
+						e.preventDefault()
+						// Dodajemy małe opóźnienie przed przekierowaniem
+						setTimeout(() => {
+							window.location.href = this.href
+						}, 50)
+					})
+				})
+			})
+		</script>
 
 		<!-- Cookie Consent Script -->
 		<script>
